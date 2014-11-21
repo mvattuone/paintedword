@@ -11,7 +11,7 @@ setup(
     description='A set of helpers for building an image based campaign.  Plays nicely with the Actionkit CRM.',
     long_description=open('README.txt').read(),
     install_requires=[
-        "Django == 1.4",
+        "Django =~ 1.4",
     ],
     packages=find_packages(),
     include_package_data=True,
