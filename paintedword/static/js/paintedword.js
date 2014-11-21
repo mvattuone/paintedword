@@ -1,30 +1,3 @@
-//spin.js options
-var opts = {
-  lines: 13, // The number of lines to draw
-  length: 7, // The length of each line
-  width: 2, // The line thickness
-  radius: 4, // The radius of the inner circle
-  corners: 1, // Corner roundness (0..1)
-  rotate: 0, // The rotation offset
-  color: '#000', // #rgb or #rrggbb
-  speed: 1, // Rounds per second
-  trail: 60, // Afterglow percentage
-  shadow: false, // Whether to render a shadow
-  hwaccel: false, // Whether to use hardware acceleration
-  className: 'spinner', // The CSS class to assign to the spinner
-  zIndex: 2e9, // The z-index (defaults to 2000000000)
-  top: 'auto', // Top position relative to parent in px
-  left: 'auto' // Left position relative to parent in px
-};
-
-var target = document.getElementById('caption_form');
-var spinner = new Spinner(opts).spin(target);
-
-//lazy load
-$("img.lazy").lazyload({
-    effect       : "fadeIn"
-});
-
 //flash
 function flash(){
     $('.flashDiv')
@@ -81,7 +54,6 @@ if (text.val().length >= max_length) {
 
     
 $(document).ready(function() {
-$('.spinner').hide();
 
 var text = $("#id_message"),
     max_length = text.attr("maxlength"),
@@ -324,7 +296,6 @@ $("#sendForm").click(function(e) {
     var dataURL = canvas.toDataURL();
     $('#id_photo_dataurl').val(dataURL);
     $("#sendForm").val("");
-    $(".spinner").show();
     $('input').removeClass('error');
     $('label').removeClass('error');
 
@@ -341,7 +312,6 @@ $("#sendForm").click(function(e) {
             raw_photo_pk: $('#id_raw_photo_pk').val(),
         },
        error: function(jqXHR, textStatus) {
-            $(".spinner").hide();
             $("#sendForm").val("Submit");
             var errors = $.parseJSON(jqXHR.responseText);
             $('input#id_'+errors.field).addClass('error');
@@ -349,7 +319,6 @@ $("#sendForm").click(function(e) {
             $("#sendForm").removeAttr("disabled")
         },
         success: function(jqXHR, textStatus, errorThrown) {
-            $(".spinner").hide();
             $('#upload').hide();
             $('#black_overlay').fadeOut();
             $('#start_upload').html("<p>Thanks for sharing your voice!</p>")
