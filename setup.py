@@ -2,16 +2,16 @@ from distutils.core import setup
 from setuptools import find_packages
 
 setup(
-    name='django-webcam-photoupload',
-    version='0.3.3',
+    name='painted-word',
+    version='0.0.1',
     author='Mike Vattuone',
-    author_email='mike.v@engagementlab.org',
-    url='https://github.com/citizenengagementlab/django-webcam-photoupload',
+    author_email='mvattuone@gmail.com',
+    url='https://github.com/mvattuone/painted-word',
     license='LICENSE.txt',
-    description='Webcam photo uploads for the movement',
+    description='A set of helpers for building an image based campaign.  Plays nicely with the Actionkit CRM.',
     long_description=open('README.txt').read(),
     install_requires=[
-        "Django == 1.5",
+        "Django == 1.4",
     ],
     packages=find_packages(),
     include_package_data=True,

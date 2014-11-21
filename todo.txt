@@ -1,6 +1,6 @@
-Figure out how to decouple the photo_upload URL path from the ziplookup path.  IE I don't want to have the URL in the ajax call for ziplookup include "photo" in it.  I guess this isn't really a big deal as long as I explain the URL HAS TO BE      
+Figure out how to decouple the paintedword URL path from the ziplookup path.  IE I don't want to have the URL in the ajax call for ziplookup include "photo" in it.  I guess this isn't really a big deal as long as I explain the URL HAS TO BE      
 
-url(r'^photo/', include('photo_upload.urls'))
+url(r'^photo/', include('paintedword.urls'))
 
 
 Figure out what this means when I try to submit:

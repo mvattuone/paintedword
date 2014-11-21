@@ -11,18 +11,10 @@ import re
 from django.core.files.base import ContentFile
 import tempfile
 
-#from ak_support.views import ak_connect,validate_token
+from ak_support.views import ak_connect
 
 from models import *
 from forms import *
-
-#TODO:  use os and change directory to parent presente_vote, so that from racewatch.models CampaignPartners 
-#can be imported, subsequently allowing us to add partner links into the base template without hardcoding.
-
-    
-def index(request):
-    campaigns = PhotoCampaign.objects.all()
-    return render(request, "list.html", dictionary={'list':campaigns})
 
 def campaign_render(request,slug):
     campaign = get_object_or_404(PhotoCampaign,slug=slug)
@@ -30,17 +22,6 @@ def campaign_render(request,slug):
     logo = PhotoCampaign.objects.get().logo
     raw_form = RawPhotoForm(request.POST or None)
     context = {}
-
-#    akid = request.GET.get('akid')
-
-#    if akid:
-#        ak = ak_connect()
-#        user = ak.User.get({'akid':request.GET.get('akid')})
-#        if user:
-#            context['user'] = user
-#            context['recognized'] = True
-#        else:
-#            context['recognized'] = False
 
     if form.is_valid():
         new_photo = form.save()

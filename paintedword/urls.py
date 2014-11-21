@@ -9,7 +9,7 @@ urlpatterns = patterns('',
     url (r'^ziplookup/',include('ziplookup.urls')),
 )
 
-urlpatterns += patterns('photo_upload.views',
+urlpatterns += patterns('paintedword.views',
     (r'^$', 'index'),
     (r'^(?P<slug>[\w-]+)/$', 'campaign_render'),
     (r'^(?P<slug>[\w-]+)/upload_raw_photo$', 'upload_raw_photo'), #make sure no trailing slash

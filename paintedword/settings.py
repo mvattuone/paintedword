@@ -101,10 +101,10 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'photo_upload.urls'
+ROOT_URLCONF = 'paintedword.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'photo_upload.wsgi.application'
+WSGI_APPLICATION = 'paintedword.wsgi.application'
 
 TEMPLATE_DIRS = (
     os.path.join(PROJECT_PATH,'templates')
@@ -120,7 +120,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.admindocs',    
-    'photo_upload',
+    'paintedword',
     'usps',
     'ziplookup',
 )
