@@ -14,7 +14,7 @@ from django.shortcuts import render_to_response
 from django.conf import settings
 import json
 
-from ziplookup.models import ZipCode
+from models import ZipCode
 
 def zip_lookup(request):
     
