@@ -1,115 +1,17 @@
-{% extends "base.html" %}
-
+{% extends "base/base.html" %}
+{% load paintedword_tags %}
 {%block content%}
 
 <link rel="stylesheet" href="{{STATIC_URL}}css/paintedword.css" />
 <!--[if IE]><link rel="stylesheet" href="{{STATIC_URL}}css/fileuploader.css" /><![endif]-->
-<div id="black_overlay"></div>
-<div class="flashDiv"></div>
 <div id="wrapper">
-<ul id="photo_grid">
-	{{raw_post}}
-		<li class="captioned_photo first">
-		<h2>{{campaign.title}}</h2>
-		<p>{{campaign.description}}</p>
-		<div id="start_upload">
-			<button>Upload</button>
-		</div>
-		</li>
-	{%for photo in photos%}
-		<li class="captioned_photo"><img class="lazy" src="{{STATIC_URL}}/img/grey.gif" data-original="{{MEDIA_URL}}{{photo.captioned_photo}}" /></li>
-	{%endfor%}
-</ul>
-
-
-
-<div id="upload">
-	<article id="step-1">
-		<section class="left-section">
-			<h2>Use your webcam to take a photo!</h2>
-			<ol>
-				<li>Click &#10004; to allow camera access &rarr;</li>
-				<li>Smile for the camera <span>&#9786;</span></li>
-				<li>Click the button &darr;</li`>
-			</ol>
-			<button id="snap-button">Take Photo</button>
-			<p>No webcam?  Upload a photo!</p>
-			<div id="file-uploader"></div> 
-			<form id="upload_photo" method="POST" action="upload_raw_photo" enctype="multipart/form-data">
-				{{raw_form.as_ul}}
-				<input id="uploadDirect" type="submit" value="Upload your photo!" />
-			</form>
-		</section>
-		<section class="right-section">
-			<div id="camera"></div>
-		</section>
-	</article>
-		
-	<article id ="step-2">
-		<section class="left-section">
-			<form id="caption_form" action="/submit" method="POST">
-				{% csrf_token %}
-				<!-- csrf token ajax for photo, pass to PhotoUpload view -->
-				{{ form.non_field_errors }}
-				<div class="nophoto">
-				    <div class="fieldWrapper">
-				        {{form.captioned_photo.errors}}
-				        <label for="id_captioned_photo">Upload a photo</label>
-				        {{form.captioned_photo}}
-				       </div>		
-				   </div>	
-				   <div id="captioned_photo" class="fieldWrapper">
-					{{ form.captioned_photo.errors }}
-				</div>
-				{% if recognized %}
-					Not {{user.first_name}} {{user.last_name}}? <a href=".">click here</a>
-					<input id="id_name" type="hidden" name="name" value="{{user.first_name}} {{user.last_name|slice:'1'}}" />
-					<input id="id_zip_code" type="hidden" name="zip_code" value="{{user.postal}}" />
-					<input id="id_email" type="hidden" name="email" value="{{user.email}}" />
-					<input id="id_akid" name="akid" type="hidden" value="{{user.id}}"/>
-				{%else%}
-					<div class="fieldWrapper">
-						<label for="id_name">Your Name</label>
-						<input id="id_name" type="text" name="name" maxlength="50" />
-					</div>
-					<div class="fieldWrapper">
-					    <label for="id_zip_code">Your zip code</label>
-					    <input id="id_zip_code" type="text" name="zip_code" maxlength="5" />
-					</div>
-					<div class="fieldWrapper">
-					    <label for="id_email">Your email</label>
-					    <input id="id_email" type="text" name="email" maxlength="75" />
-					</div>
-				{%endif%}
-				 <div class="fieldWrapper">
-					<label for="id_message">Your Message: <span></span></label>
-					<textarea id="id_message" rows="10" cols="40" maxlength="140" name="message">{{campaign.default_message}}</textarea>
-				</div>
-				<input id="id_raw_photo_url" name="raw_photo_url" type="hidden" />
-				<input id="id_raw_photo_pk" name="raw_photo_pk" type="hidden" />
-				<input id="id_photo_dataurl" name="captioned_photo" type="hidden" />
-				<a id="clearFields" href="#" />Clear</a>
-				<a id="startOver" href="#" />Start Over</a>
-				<input id="sendForm" type="submit" value="Submit" />
-				<a href="#privacy">privacy policy</a>
-              	<div id="privacyText">
-                <p>
-                  “You will receive updates from Presente.org as a result of submitting your email. You will be able to unsubscribe from our list at any time. Presente.org won’t share your information with anyone else without your consent.”
-                </p>
-              </div>
-			</form>	
-		</section>
-		<section class="right-section">
-			<canvas id="canvas-foreground" width="640" height="480"></canvas>
-			<canvas id="canvas" width="640" height="480"></canvas>
-		</section>
-	</article>
+		<!-- Context variables - style as needed -->
+		{{title}} <!-- Pure text -->
+		{{description}} <!-- Pure text -->
+		{{example_photo|safe}} <!-- Image Tag -->
+		{% signup_form page_name %} <!-- See template signup_form.html -->
+		{% photo_upload 'no_webcam' %} <!-- See template photo_upload.html -->
 </div>
-
-</div>
-
-<div class="push"></div>
-
 
 <script type="text/javascript">
 //passing the logo into Javascript from the context.

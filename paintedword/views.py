@@ -16,12 +16,13 @@ from ak_support.views import ak_connect
 from models import *
 from forms import *
 
-def campaign_render(request,slug):
-    campaign = get_object_or_404(PhotoCampaign,slug=slug)
-    form = PhotoForm(request.POST or None)
-    logo = PhotoCampaign.objects.get().logo
-    raw_form = RawPhotoForm(request.POST or None)
+
+def render_photo_campaign(request,slug):
     context = {}
+
+    campaign = get_object_or_404(PhotoCampaign,slug=slug)
+    form = PhotoForm()
+    photoupload = PhotoForm(request.POST or None)
 
     if form.is_valid():
         new_photo = form.save()
@@ -40,12 +41,12 @@ def campaign_render(request,slug):
     context = {
         "photos": Photo.objects.filter(campaign=campaign,approved=True),
         'form': form,
-        'raw_form': raw_form,
-        "campaign": campaign,
-        'logo': logo,
+        'logo':campaign.logo,
+        'title':campaign.title,
+        'description':campaign.description,
+        'page_name':campaign.ak_page_name,
+        'example_photo': campaign.render_example_photo(),
     }
-
-
 
     return render(request, "index.html", dictionary=context)
     
