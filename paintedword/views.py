@@ -48,7 +48,7 @@ def render_photo_campaign(request,slug):
         'example_photo': campaign.render_example_photo(),
     }
 
-    return render(request, "index.html", dictionary=context)
+    return render(request, "paintedword.html", dictionary=context)
     
 @csrf_exempt
 def upload_raw_photo(request,slug):
