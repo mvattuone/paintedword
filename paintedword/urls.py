@@ -9,15 +9,9 @@ urlpatterns = patterns('',
 )
 
 urlpatterns += patterns('paintedword.views',
-    (r'^$', 'index'),
     (r'^(?P<slug>[\w-]+)/$', 'campaign_render'),
     (r'^(?P<slug>[\w-]+)/upload_raw_photo$', 'upload_raw_photo'), #make sure no trailing slash
     (r'^(?P<slug>[\w-]+)/submit$', 'submit')
-)
-
-#zip lookup for converting zip code to city on image.
-urlpatterns = patterns('paintedword.ziplookup',
-    (r'^zip_lookup/{0,1}$', 'zip_lookup'),
 )
 
 if settings.DEBUG:
