@@ -1,0 +1,13 @@
+<ul id="photo_grid">
+		<li class="captioned_photo first">
+		<h2>{{title}}</h2>
+		<p>{{description}}</p>
+		<div id="start_upload">
+			<button>Upload</button>
+		</div>
+		</li>
+		<li class="captioned photo">{{render_example_photo}}</li>
+		{%for photo in photos%}
+			<li class="captioned_photo"><img class="lazy" src="{{STATIC_URL}}/img/grey.gif" data-original="{{MEDIA_URL}}{{photo.captioned_photo}}" /></li>
+		{%endfor%}
+</ul>
