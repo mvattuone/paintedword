@@ -25,10 +25,6 @@ $("img.lazy").lazyload({
     effect       : "fadeIn"
 });
 
-$("ul#photo_grid > li").not(".first").hover(function() {
-
-})
-
 //flash
 function flash(){
     $('.flashDiv')
@@ -115,15 +111,13 @@ $('#id_message').keyup(function(){
 function zipLookup(zip) {
     $.ajax({
         type: 'get',
-        url: '/photo/ziplookup/zip_lookup',
-        data: {
-            zip: zip
-        },
+        url: 'http://ziptasticapi.com/' + zip,
         error: function(d) {
             alert("Error looking up zip code.")
             return false;
         },
         success: function(d) {
+            var d = $.parseJSON(d); 
             //TODO:  tie this into form upload so correct ZIP is required
             if (d.city === undefined || d.state === undefined) {
                 $('input#id_zip_code').addClass('error');
