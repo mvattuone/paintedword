@@ -12,9 +12,7 @@ Installation
 
 Pretty dang easy:
 
-* Add 'paintedword' and 'ziplookup' to your INSTALLED_APPS. Yes, we will merge these at some point.
-
-* SyncDB (this will load fixtures from ziplookup, which might take a sec since it's a json file full of zipcodes)
+* Add 'paintedword' to your INSTALLED_APPS. 
 
 * Add the app to your urls.py
 urlpatterns = patterns('',
