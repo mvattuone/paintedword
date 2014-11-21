@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.files.storage import FileSystemStorage
+from django.conf import settings
 
 media = FileSystemStorage()
 
@@ -15,6 +16,7 @@ class PhotoCampaign(models.Model):
 	slug = models.SlugField()
 	logo = models.ImageField(upload_to='logos/', storage=media, null=True, blank=True)
 	description = models.TextField()
+	disclaimer = models.TextField(help_text="Disclaimer that should appear with the form (privacy policy, terms, etc.")
 	default_message = models.TextField(null=True,blank=True)
 	example_photo = models.ImageField(upload_to=example_file_name,null=True,blank=True)
 	ak_page_name = models.CharField(help_text="name of the page to act on the user",max_length=50,null=True,blank=True)
@@ -22,11 +24,8 @@ class PhotoCampaign(models.Model):
 	def __unicode__(self):
 		return '%s, %s' % (self.title, self.description,)
 	
-	def get_title(self):
-		return '%s' % self.title
-	
-	def get_description(self):
-		return '%s' % self.description
+	def render_example_photo(self):
+		return '<img src="%s%s">' % (settings.MEDIA_URL, self.example_photo,)
 
 class RawPhoto(models.Model):
 	photo = models.ImageField(upload_to=raw_file_name, storage=media)
