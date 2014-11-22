@@ -1,26 +1,43 @@
 //HELPER FUNCTIONS FOR PHOTO UPLOAD WIDGET
 
+$("#uploadDirect").click(function(e) {
+    e.preventDefault();
+    //clears canvas
+    var canvas = document.getElementById("canvas");
+    var context = canvas.getContext("2d");
+    context.setTransform(1, 0, 0, 1, 0, 0);
+    context.clearRect(0,0,canvas.width,canvas.height);
+    switchStep();
+
+    //draw image to canvas
+
+    drawPhoto(context, $('#preview').attr('src'));
+
+    var canvasForeground = document.getElementById("canvas-foreground"),
+        context = canvasForeground.getContext("2d");
+
+    drawFrame(context);
+        
+});
+
+// This function will presumably switch the context from the 
+// uploaded image/cropping area to the canvas with the message
 function switchStep() {
     $("#step-1").hide();
     $("#step-2").show();
 }
 
-function stepBack() {
-    redraw(); //remove current photo
-    $("#step-2").hide();
-    $("#step-1").show();
+
+var text = $("#id_message") 
+var max_length = text.attr("max-length");
+if (text.val().length >= max_length) {
+    text.on("keydown", function(event) {
+        event.preventDefault();
+    });
 }
 
-//Character limit on TextArea
-// var text = $("#id_message") 
-// var max_length = text.attr("max-length");
-// if (text.val().length >= max_length) {
-//     text.on("keydown", function(event) {
-//         event.preventDefault();
-//     });
-// }
-
-//wrap text on spaces to max width
+// wrap text on spaces to max width 
+// TODO: Update to conform to design when we get it.
 function wrapWords(context, text, maxWidth) {
     var words = text.split(' '),
         lines = [],
@@ -42,7 +59,7 @@ function wrapWords(context, text, maxWidth) {
     return lines;
 }
 
-//wrap text on linebreaks
+// wrap text on linebreaks
 function wrapLines(context,text,maxWidth) {
     var sections = text.split('\n'),
         lines = [],
@@ -56,108 +73,114 @@ function wrapLines(context,text,maxWidth) {
     return lines;
 }
 
-//redraw functions for text
+
 function drawText(context, options) {
-    var citystate = window.citystate;
-    options = options || {name: $('#id_name').val(),
-                          location: citystate,
-                          message : $('#id_message').val(),
-                          logo_url: logo_url};
-    //note that logo_url must be in the same host as this script, otherwise we can't do canvas.toDataURL()
+    options = options || {message : $('#id_message').val(), frame_url: frame_url};
+    
+    //note that frame_url must be in the same host as this script, otherwise we can't do canvas.toDataURL()
     //overlay a transparent rect to draw text on
     context.fillStyle = "rgba(0, 0, 0, 0.50)";
-    context.fillRect(0,380,640,100);
+    context.fillRect(0,100,100,100);
 
-    //name & location
-    if (options === undefined) {
-        var name_text = "";
-    } else if (options.location === undefined) {
-        var name_text = options.name;
-    } else {
-        var name_text = options.name+" - "+options.location;        
-    }
-   
-    context.fillStyle = "rgba(255, 255, 255, 1)";
-    context.font = "bold 20px museo-slab";
-    context.textAlign = "end";
-    context.fillText(name_text, 630, 470);
-    //message
+    //lay out the message
     if (options.message !== "undefined") {
         var msg_text = options.message;
         var fontSize = 19;
-        var textWrapWidth = 560; //for text wrap
-        var heightOffset = 390; //starting height
+        var textWrapWidth = 180; //for text wrap
+        var heightOffset = 100; //starting height
         context.textAlign = "start";
-        context.font = fontSize+"px museo-slab";
+        context.font = fontSize+"px Comic Sans MS";
+        context.fillStyle = 'lime'
         
         var lines = wrapLines(context, msg_text, textWrapWidth - parseInt(fontSize,0));
         lines.forEach(function(line, i) {
             context.fillText(line, 40, heightOffset + ((i + 1) * parseInt(fontSize,0)));
         });
     }
+}
 
-
-        if (options.logo_url !== "undefined") {
-            var logo = new Image();
-            logo.src = options.logo_url;
-            logo.onload = function() {
-                context.fillStyle = "#BF2E1A";
-                context.fillRect(0,0,logo.width+40,logo.height+20);
-                context.drawImage(logo,20,10,logo.width,logo.height);
-            }
+//overlay frame layer onto image
+//we can also update to just overlay logo and build frame ourselves 
+//need to update styles and positions eventually
+function drawFrame(context,callback) {
+    if (frame_url !== "undefined") {
+        var logo = new Image();
+        logo.src = frame_url;
+        logo.onload = function() {
+            context.fillStyle = "#BF2E1A";
+            context.fillRect(0,0,logo.width+40,logo.height+20);
+            context.drawImage(logo,20,10,logo.width,logo.height);
         }
     }
+}
 
+//draw photo to canvas
 function drawPhoto(context,image_src, callback) {
     var img = new Image();
     img.src = image_src;
     img.onload = function() {
-        context.drawImage(img, 0, 0, 640, 480);
-
+        context.drawImage(img, 0, 0, 360, 360);
         if (typeof callback !== "undefined") {
             callback(context);
         }
     };
 }
 
+//redraw when we add text and such
 function redraw(){
     var canvas = document.getElementById("canvas");
     var context = canvas.getContext("2d");
 
-    drawPhoto(context,$('#id_raw_photo_url').val(),drawText);
+    drawPhoto(context,$('#preview').attr('src'), drawText);
 }
 
 //update image on text fields change
 $("#id_message").change(redraw);
-
-//start over link
-$("a#startOver").click(function(event) {
-    event.preventDefault();
-    stepBack();
-});
 
 //Callbacks
 function err(e) { if (window.console && console.error) console.error(e) }
 
 function fileLoadCallback(file) {
     var reader = new FileReader();
-    reader.onload = function(e) {
-        console.log(e);
-        $("#preview img").attr('src', e.target.result);    
-        $('#image_input').html(['<img src="', canvas.toDataURL(), '"/>'].join(''));
-        var img = $('#image_input img')[0];
-        setTimeout(function() {
-            $('#image_input img').Jcrop({
-                bgColor: 'black',
-                bgOpacity: .6,
-                setSelect: [0, 0, 100, 100],
-                aspectRatio: 1,
-            });
-        }, 3000)
-    }
+    reader.onload = (function(file) { 
+        //Cropping magic - Will update and explain later.
+        return function(e) {
+            var image = new Image();
+            image.src = e.target.result;
+            image.onload = function() {
+                var canvas = document.createElement('canvas');
+                canvas.width = 300;
+                canvas.height = image.height * (300 / image.width);
+                var ctx = canvas.getContext('2d');
+                ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+                
+                $('.example-photo img').replaceWith(['<img src="', canvas.toDataURL(), '"/>'].join(''));
+
+                var img = $('.example-photo img')[0];
+                var canvas = document.createElement('canvas');
+
+                $('.example-photo img').Jcrop({ 
+                    bgColor: 'black',
+                    bgOpacity: .4,
+                    setSelect: [0, 0, 100, 100],
+                    aspectRatio: 1, 
+                    onSelect: cropImage,
+                    onChange: cropImage
+                });
+
+                function cropImage(selection) {
+                    canvas.width = canvas.height = 360;
+
+                    var ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, selection.x, selection.y, selection.w, selection.h, 0, 0, canvas.width, canvas.height);
+
+                    $('#preview').attr('src', canvas.toDataURL())
+                }
+            }
+        }
+    })(file);   
     reader.readAsDataURL(file);
 }
-
 
 //Called after file is succesfully uploaded and drawn to the canvas, 
 //Allows for hooks to manipulate DOM (show share buttons, form ,etc.)
@@ -170,43 +193,14 @@ function uploadCallback(response) {
     }
 };
 
+// Event for when user loads a file
+// Not doing any fancy file drop this time around
 $('#id_photo').change(function(e) {
     var file = e.target.files[0];
     fileLoadCallback(file);
 })
 
-$("#uploadDirect").click(function(e) {
-        e.preventDefault();
-        data = new FormData();
-        data.append('photo', $("#id_photo")[0].files[0]);
-        $.ajax({
-            type: 'POST',
-            url:"upload_raw_photo",
-            processData:false,
-            contentType: false,
-            dataType: false,
-            data: data,
-        error: function(data) {
-            alert('Please select a photo to upload before submitting.')
-        },
-        success: function(data) {
-            var data = $.parseJSON(data);
-            //clears canvas
-            var canvas = document.getElementById("canvas");
-            var context = canvas.getContext("2d");
-            context.setTransform(1, 0, 0, 1, 0, 0);
-            context.clearRect(0,0,canvas.width,canvas.height);
-            switchStep();
-            $('#id_raw_photo_pk').val(data.raw_photo_pk);
-            $('#id_raw_photo_url').val(data.file_url);
-            //draw image to canvas
-            var canvas = document.getElementById("canvas");
-            var context = canvas.getContext("2d");
-            drawPhoto(context,data.file_url, uploadCallback(data));
-        }
-    });
-});
-
+//Need to update this to submit photo to the DB and trigger share context
 $("#sendForm").click(function(e) {
     e.preventDefault();
     this.disabled=true;
@@ -267,7 +261,7 @@ $('#id_message').keyup(function(){
         label.css("color", "red");
         break;
    default:
-        label.css("color", "white");
+        label.css("color", "black");
    }
 });
 });
