@@ -18,6 +18,4 @@ def photo_caption(default_message):
 @register.inclusion_tag('photo_upload.html')
 def photo_upload(options):
 	raw_form = RawPhotoForm()
-	if options == 'no_webcam':
-		no_webcam = True
-	return {'raw_form': raw_form, 'no_webcam': no_webcam, }
+	return {'raw_form': raw_form }

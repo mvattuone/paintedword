@@ -1,8 +1,5 @@
 <div id="upload">
 	<div id="step-1">
-		{% if not no_webcam %}
-		<div id="camera"></div>
-		{% endif %}
 		<div id="file-uploader"></div> 	
 		<form id="upload_photo" method="POST" action="upload_raw_photo" enctype="multipart/form-data">	
 			{{raw_form.as_ul}}
