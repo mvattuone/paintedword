@@ -1,37 +1,5 @@
-//flash
-function flash(){
-    $('.flashDiv')
-    .show()  //show the hidden div
-    .animate({opacity: 0.5}, 300) 
-    .fadeOut(300)
-    .css({'opacity': 1});
-}
+//HELPER FUNCTIONS FOR PHOTO UPLOAD WIDGET
 
-//Shadowbox, on click it goes away
-$("#start_upload button").click(function(event) {
-    event.preventDefault();
-    $("#black_overlay").fadeIn('slow', function() {
-            $(this).click(function() {
-                $('#upload').hide();
-                $('#black_overlay').fadeOut();
-                $('#step-2').hide();
-                $('#step-1').show();
-            });
-        $("#upload").show();
-    });
-});
-
-//Webcam options
-webcam.set_swf_url('../../static/swf/webcam.swf');
-webcam.set_shutter_sound(true, "../../static/mp3/shutter.mp3");
-webcam.set_quality(90);
-webcam.set_stealth(false);
-webcam.set_hook('onComplete', 'callbackCamera');
-    
-//Render webcam
-$("#camera").html(webcam.get_html(640, 480));
-
-//Switches uploads steps
 function switchStep() {
     $("#step-1").hide();
     $("#step-2").show();
@@ -51,57 +19,6 @@ if (text.val().length >= max_length) {
         event.preventDefault();
     });
 }
-
-    
-$(document).ready(function() {
-
-var text = $("#id_message"),
-    max_length = text.attr("maxlength"),
-    label = $('label[for=id_message] span');
-
-//initial
-label.html(max_length - text.val().length)
-
-//change
-$('#id_message').keyup(function(){
-   label.html(max_length - this.value.length)
-   //change color
-   var charCount = text.val().length
-   switch(true)
-   {
-   case (charCount >=130):
-        label.css("color", "red");
-        break;
-   default:
-        label.css("color", "white");
-   }
-});
-});
-
-
-//Convert ZIP code to state, draw to canvas
-function zipLookup(zip) {
-    $.ajax({
-        type: 'get',
-        url: 'http://ziptasticapi.com/' + zip,
-        error: function(d) {
-            alert("Error looking up zip code.")
-            return false;
-        },
-        success: function(d) {
-            var d = $.parseJSON(d); 
-            //TODO:  tie this into form upload so correct ZIP is required
-            if (d.city === undefined || d.state === undefined) {
-                $('input#id_zip_code').addClass('error');
-            } else {
-                window.citystate = d.city + ", " + d.state;
-                $('input#id_zip_code').removeClass('error');
-                redraw();
-            }
-        }
-    })
-}
-
 
 //wrap text on spaces to max width
 function wrapWords(context, text, maxWidth) {
@@ -210,35 +127,8 @@ function redraw(){
     drawPhoto(context,$('#id_raw_photo_url').val(),drawText);
 }
 
-//Callback function for jpegcam - invokes switchStep, creates canvas, and adds jpeg image to canvas
-function callbackCamera(response) {
-    var data = JSON.parse(response);
-    //going from step 1 to 2 in the upload form.
-    switchStep();
-    //save photo pk and url form
-    $('#id_raw_photo_pk').val(data.raw_photo_pk);
-    $('#id_raw_photo_url').val(data.file_url);
-
-    //draw image to canvas
-    var canvas = document.getElementById("canvas");
-    var context = canvas.getContext("2d");
-
-    drawPhoto(context,data.file_url);
-}
-
 //update image on text fields change
-$("#id_name").change(redraw);
-$("#id_zip_code").change(function() {
-    zip = $(this).val();
-    zipLookup(zip);
-});
 $("#id_message").change(redraw);
-
-//preview link
-$("a#previewImage").click(function(event) {
-    event.preventDefault();
-    redraw();
-});
 
 //start over link
 $("a#startOver").click(function(event) {
@@ -246,14 +136,7 @@ $("a#startOver").click(function(event) {
     stepBack();
 });
 
-//button click handlers
-
-$("#snap-button").click(function() {
-    flash();
-    webcam.snap("upload_raw_photo", "callbackCamera");
-});
-
-
+//Callbacks
 function err(e) { if (window.console && console.error) console.error(e) }
 
 //Called after file is succesfully uploaded and drawn to the canvas, 
@@ -337,6 +220,31 @@ $("#sendForm").click(function(e) {
             $("#sendForm").val("Submit");
         }
     });  
+});
+
+$(document).ready(function() {
+
+var text = $("#id_message"),
+    max_length = text.attr("maxlength"),
+    label = $('label[for=id_message] span');
+
+//initial
+label.html(max_length - text.val().length)
+
+//change
+$('#id_message').keyup(function(){
+   label.html(max_length - this.value.length)
+   //change color
+   var charCount = text.val().length
+   switch(true)
+   {
+   case (charCount >=130):
+        label.css("color", "red");
+        break;
+   default:
+        label.css("color", "white");
+   }
+});
 });
 
 
