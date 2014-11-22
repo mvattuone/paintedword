@@ -253,11 +253,24 @@ $("#snap-button").click(function() {
     webcam.snap("upload_raw_photo", "callbackCamera");
 });
 
+
+function err(e) { if (window.console && console.error) console.error(e) }
+
+//Called after file is succesfully uploaded and drawn to the canvas, 
+//Allows for hooks to manipulate DOM (show share buttons, form ,etc.)
+function uploadCallback(response) {
+    if ( window.onUploadSuccess ) {
+        try {
+            var res = onUploadSuccess(response);
+            if ( typeof(res) === typeof(false) && !res ) return false;
+        } catch(e) { err(e) };
+    }
+};
+
 $("#uploadDirect").click(function(e) {
         e.preventDefault();
         data = new FormData();
         data.append('photo', $("#id_photo")[0].files[0]);
-
         $.ajax({
             type: 'POST',
             url:"upload_raw_photo",
@@ -276,14 +289,12 @@ $("#uploadDirect").click(function(e) {
             context.setTransform(1, 0, 0, 1, 0, 0);
             context.clearRect(0,0,canvas.width,canvas.height);
             switchStep();
-                $('#id_raw_photo_pk').val(data.raw_photo_pk);
-                $('#id_raw_photo_url').val(data.file_url);
-
-                //draw image to canvas
-                var canvas = document.getElementById("canvas");
-                var context = canvas.getContext("2d");
-
-             drawPhoto(context,data.file_url);
+            $('#id_raw_photo_pk').val(data.raw_photo_pk);
+            $('#id_raw_photo_url').val(data.file_url);
+            //draw image to canvas
+            var canvas = document.getElementById("canvas");
+            var context = canvas.getContext("2d");
+            drawPhoto(context,data.file_url, uploadCallback(data));
         }
     });
 });

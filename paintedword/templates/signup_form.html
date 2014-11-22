@@ -1,7 +1,6 @@
 <form id="caption_form" action="/submit" method="POST">
 	{% csrf_token %}
 	<!-- csrf token ajax for photo, pass to PhotoUpload view -->
-	{{ form.non_field_errors }}
 	<div class="fieldWrapper">
 		<label for="id_name">Your Name</label>
 		<input id="id_name" type="text" name="name" maxlength="50" />
@@ -13,10 +12,6 @@
 	<div class="fieldWrapper">
 	    <label for="id_zip_code">Your zip code</label>
 	    <input id="id_zip_code" type="text" name="zip_code" maxlength="5" />
-	</div>
-	 <div class="fieldWrapper">
-		<label for="id_message">Your Message: <span></span></label>
-		<textarea id="id_message" rows="10" cols="40" maxlength="140" name="message">{{campaign.default_message}}</textarea>
 	</div>
 	<input id="id_raw_photo_url" name="raw_photo_url" type="hidden" />
 	<input id="id_raw_photo_pk" name="raw_photo_pk" type="hidden" />
