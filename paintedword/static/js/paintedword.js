@@ -12,13 +12,13 @@ function stepBack() {
 }
 
 //Character limit on TextArea
-var text = $("#id_message") 
-var max_length = text.attr("max-length");
-if (text.val().length >= max_length) {
-    text.on("keydown", function(event) {
-        event.preventDefault();
-    });
-}
+// var text = $("#id_message") 
+// var max_length = text.attr("max-length");
+// if (text.val().length >= max_length) {
+//     text.on("keydown", function(event) {
+//         event.preventDefault();
+//     });
+// }
 
 //wrap text on spaces to max width
 function wrapWords(context, text, maxWidth) {
@@ -139,6 +139,26 @@ $("a#startOver").click(function(event) {
 //Callbacks
 function err(e) { if (window.console && console.error) console.error(e) }
 
+function fileLoadCallback(file) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        console.log(e);
+        $("#preview img").attr('src', e.target.result);    
+        $('#image_input').html(['<img src="', canvas.toDataURL(), '"/>'].join(''));
+        var img = $('#image_input img')[0];
+        setTimeout(function() {
+            $('#image_input img').Jcrop({
+                bgColor: 'black',
+                bgOpacity: .6,
+                setSelect: [0, 0, 100, 100],
+                aspectRatio: 1,
+            });
+        }, 3000)
+    }
+    reader.readAsDataURL(file);
+}
+
+
 //Called after file is succesfully uploaded and drawn to the canvas, 
 //Allows for hooks to manipulate DOM (show share buttons, form ,etc.)
 function uploadCallback(response) {
@@ -149,6 +169,11 @@ function uploadCallback(response) {
         } catch(e) { err(e) };
     }
 };
+
+$('#id_photo').change(function(e) {
+    var file = e.target.files[0];
+    fileLoadCallback(file);
+})
 
 $("#uploadDirect").click(function(e) {
         e.preventDefault();
@@ -246,6 +271,7 @@ $('#id_message').keyup(function(){
    }
 });
 });
+
 
 
 
