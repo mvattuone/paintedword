@@ -5,11 +5,11 @@ from django.conf import settings
 media = FileSystemStorage()
 
 def example_file_name(instance, filename):
-	return "webcam/%s/example.png" % (instance.slug)
+	return "photos/%s/example.png" % (instance.slug)
 def raw_file_name(instance, filename):
-	return "webcam/raw/raw.png"
+	return "photos/raw/raw.png"
 def captioned_file_name(instance, filename):
-	return "webcam/%s/%d_caption.png" % (instance.campaign.slug,instance.pk)
+	return "photos/%s/%d_caption.png" % (instance.campaign.slug,instance.pk)
 
 class PhotoCampaign(models.Model):
 	title = models.CharField(max_length=50)
