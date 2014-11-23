@@ -1,14 +1,9 @@
 <div id="upload">
-	<div id="step-1">
+	<div data-step="1">
 		<div class="example-photo">{{example_photo|safe}}</div>
-		<img id="preview" style="border:1px solid #000"/>
-		<form id="upload_photo" method="POST" action="#" enctype="multipart/form-data">
-			{{raw_form.as_ul}}
-			<input id="uploadDirect" type="submit" value="Upload your photo!" />
-		</form>
 	</div>
 		
-	<div id ="step-2" style="display:none">
+	<div data-step="2" style="display:none">
 		<div class="canvas-container" style="position:relative">
 			<canvas id="canvas-foreground" style="position:absolute; left:0; top:0;" width="360" height="360"></canvas>
 			<canvas id="canvas" style="position:absolute; left:0; top:0;" width="360" height="360"></canvas>
@@ -17,7 +12,7 @@
 			<label for="id_message">Your Message: <span></span></label>
 			<textarea id="id_message" rows="10" cols="40" maxlength="140" name="message">{{default_message}}</textarea>
 		</div>
-		<a id="facebook" href="#">Post to Facebook</a>
+		<a id="share-to-facebook" href="#">Post to Facebook</a>
 		<a id="startOver" href="#" />Start Over</a>
 	</div>
 </div>
