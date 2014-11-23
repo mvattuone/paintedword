@@ -27,15 +27,6 @@ function switchStep() {
     $("#step-2").show();
 }
 
-
-var text = $("#id_message") 
-var max_length = text.attr("max-length");
-if (text.val().length >= max_length) {
-    text.on("keydown", function(event) {
-        event.preventDefault();
-    });
-}
-
 // wrap text on spaces to max width 
 // TODO: Update to conform to design when we get it.
 function wrapWords(context, text, maxWidth) {
@@ -241,29 +232,55 @@ $("#sendForm").click(function(e) {
     });  
 });
 
-$(document).ready(function() {
-
-var text = $("#id_message"),
-    max_length = text.attr("maxlength"),
-    label = $('label[for=id_message] span');
-
-//initial
-label.html(max_length - text.val().length)
-
-//change
-$('#id_message').keyup(function(){
-   label.html(max_length - this.value.length)
-   //change color
-   var charCount = text.val().length
-   switch(true)
-   {
-   case (charCount >=130):
-        label.css("color", "red");
-        break;
-   default:
-        label.css("color", "black");
-   }
+$("#facebook").on('click', function() {
+    FB.login(function(response) {
+       if (response.authResponse) {
+         var access_token =   FB.getAuthResponse()['accessToken'];
+         console.log('Access Token = '+ access_token);
+          PostImageToFacebook(access_token);
+       } else {
+         console.log('User cancelled login or did not fully authorize.');
+       }
+    }, {scope: 'publish_actions'});
 });
+      
+
+$(document).ready(function() {
+    // Todo: Add Facebook app ID as a package setting.
+    $.ajaxSetup({ cache: true });
+    $.getScript('//connect.facebook.net/en_US/all.js', function(){
+        FB.init({
+          appId: '319448898248693',
+        });     
+    });
+
+    var text = $("#id_message"),
+        max_length = text.attr("maxlength"),
+        label = $('label[for=id_message] span');
+
+    //initial
+    label.html(max_length - text.val().length)
+
+    if (text.val().length >= max_length) {
+        text.on("keydown", function(event) {
+            event.preventDefault();
+        });
+    }
+
+    //change
+    text.keyup(function(){
+       label.html(max_length - this.value.length)
+       //change color
+       var charCount = text.val().length
+       switch(true)
+       {
+       case (charCount >=130):
+            label.css("color", "red");
+            break;
+       default:
+            label.css("color", "black");
+       }
+    });
 });
 
 
