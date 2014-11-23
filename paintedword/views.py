@@ -47,6 +47,7 @@ def render_photo_campaign(request,slug):
         'page_name':campaign.ak_page_name,
         'example_photo': campaign.render_example_photo(),
         'default_message': campaign.default_message,
+        'campaign_link': campaign.get_absolute_url(),
     }
 
     return render(request, "paintedword.html", dictionary=context)
