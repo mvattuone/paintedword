@@ -80,7 +80,7 @@ $(document).ready(function() {
 
 
     // Init Simple Cropper
-    $('.example-photo').simpleCropper();
+    $('#examplePhoto').simpleCropper();
       
 
     var text = $("#id_message"),

@@ -1,18 +1,24 @@
 <div id="upload">
-	<div data-step="1">
-		<div class="example-photo">{{example_photo|safe}}</div>
+	<div data-step="1" class="call-box">
+		<h2>Click the image to get started.</h2>
+		<div id="examplePhoto">{{example_photo|safe}}</div>
 	</div>
 		
 	<div data-step="2" style="display:none">
+		<h2>Enter a message and share to take action!</h2>
 		<div class="canvas-container" style="position:relative">
 			<canvas id="canvas-foreground" style="position:absolute; left:0; top:0;" width="360" height="360"></canvas>
 			<canvas id="canvas" style="position:absolute; left:0; top:0;" width="360" height="360"></canvas>
 		</div>
-		<div id="photo-caption" class-"fieldWrapper">
+		<div class-"fieldWrapper">
 			<label for="id_message">Your Message: <span></span></label>
+			<textarea id="id_message" rows="10" cols="40" maxlength="140" name="message">
+		</div>
+		<div class-"fieldWrapper">
+			<label for="id_message">Your Email: <span></span></label>
 			<textarea id="id_message" rows="10" cols="40" maxlength="140" name="message">{{default_message}}</textarea>
 		</div>
 		<a id="share-to-facebook" href="#">Post to Facebook</a>
-		<a id="startOver" href="#" />Start Over</a>
+		<a id="startOver" href="{{campaign_link}}" />Start Over</a>
 	</div>
 </div>

@@ -24,6 +24,10 @@
     var bottom_html = "<input type='file' id='fileInput' name='files[]'/><canvas id='myCanvas' style='display:none;'></canvas><div id='modal'></div><div id='preview'><div class='buttons'><div class='cancel'></div><div class='ok'></div></div></div>";
     $('body').append(bottom_html);
 
+    //add cursor element to element
+
+    this.css({'cursor': 'pointer'});
+
     //add click to element
     this.click(function() {
       aspX = $(this).width();
