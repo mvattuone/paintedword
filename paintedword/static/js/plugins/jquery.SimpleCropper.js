@@ -61,10 +61,6 @@
       });
     });
 
-    //update image on text fields change
-$("#id_message").change(redraw);
-
-
     function reset() {
       scaled_width = 0;
       scaled_height = 0;
@@ -167,116 +163,12 @@ $("#id_message").change(redraw);
       }
     }
 
-    // wrap text on spaces to max width 
-// TODO: Update to conform to design when we get it.
-function wrapWords(context, text, maxWidth) {
-    var words = text.split(' '),
-        lines = [],
-        line = "";
-    if (context.measureText(text).width < maxWidth) {
-        return [text];
-    }
-    while (words.length > 0) {
-        if (context.measureText(line + words[0]).width < maxWidth) {
-            line += words.shift() + " ";
-        } else {
-            lines.push(line);
-            line = "";
-        }
-        if (words.length === 0) {
-            lines.push(line);
-        }
-    }
-    return lines;
-}
-
-// wrap text on linebreaks
-function wrapLines(context,text,maxWidth) {
-    var sections = text.split('\n'),
-        lines = [],
-        line = "";
-    for (var i = 0; i < sections.length; i++) {
-        var wrapped_lines = wrapWords(context,sections[i],maxWidth);
-        for (var j = 0; j < wrapped_lines.length; j++) {
-            lines.push(wrapped_lines[j]);
-        }
-    }
-    return lines;
-}
-
     function showCoords(c) {
       x1 = c.x;
       y1 = c.y;
       x2 = c.x2;
       y2 = c.y2;
     }
-
-    function drawText(context, options) {
-    options = options || {message : $('#id_message').val(), frame_url: frame_url};
-    
-    //note that frame_url must be in the same host as this script, otherwise we can't do canvas.toDataURL()
-    //overlay a transparent rect to draw text on
-    context.fillStyle = "rgba(0, 0, 0, 0.50)";
-    context.fillRect(0,100,100,100);
-
-    //lay out the message
-    if (options.message !== "undefined") {
-        var msg_text = options.message;
-        var fontSize = 19;
-        var textWrapWidth = 180; //for text wrap
-        var heightOffset = 100; //starting height
-        context.textAlign = "start";
-        context.font = fontSize+"px Comic Sans MS";
-        context.fillStyle = 'lime'
-        
-        var lines = wrapLines(context, msg_text, textWrapWidth - parseInt(fontSize,0));
-        lines.forEach(function(line, i) {
-            context.fillText(line, 40, heightOffset + ((i + 1) * parseInt(fontSize,0)));
-        });
-    }
-}
-
-//redraw when we add text and such
-function redraw(){
-    var canvas = document.getElementById("canvas");
-    var context = canvas.getContext("2d");
-
-    drawPhoto(context,$('#preview img').attr('src'), drawText);
-}
-
-
-//overlay frame layer onto image
-//we can also update to just overlay logo and build frame ourselves 
-//need to update styles and positions eventually
-function drawFrame(context,callback) {
-    if (frame_url !== "undefined") {
-        var logo = new Image();
-        logo.src = frame_url;
-        logo.onload = function() {
-            context.fillStyle = "#BF2E1A";
-            context.fillRect(0,0,logo.width+40,logo.height+20);
-            context.drawImage(logo,20,10,logo.width,logo.height);
-        }
-    }
-}
-
-//draw photo to canvas
-function drawPhoto(context,image_src, callback) {
-    var img = new Image();
-    img.src = image_src;
-    img.onload = function() {
-        context.drawImage(img, 0, 0, 360, 360);
-        if (typeof callback !== "undefined") {
-            callback(context);
-        }
-    };
-}
-
-
-function switchStep(current, next) {
-    $('[data-step="' + current + '"]').hide();
-    $('[data-step="' + next + '"]').show();
-}
 
     function preview() {
 
@@ -316,8 +208,7 @@ function switchStep(current, next) {
       $('#modal').hide();
     
       switchStep(1,2);
-      drawPhoto(context, $('#preview img').attr('src'), drawFrame);
-
+      drawFrame(context);
     }
 
     $(window).resize(function() {

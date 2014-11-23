@@ -21,7 +21,6 @@ function PostImageToFacebook(authToken) {
             cache: false,
             success: function (data) {
                 console.log("success " + data);
-                $("#poster").html("Posted Canvas Successfully");
             },
             error: function (shr, status, data) {
                 console.log("error " + data + " Status " + shr.status);

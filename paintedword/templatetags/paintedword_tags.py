@@ -11,15 +11,8 @@ def gallery():
 def signup_form(page):
 	return {'page': page}
 
-@register.inclusion_tag('photo_caption.html')
-def photo_caption(default_message):
-	return {'default_message': default_message}
-
 @register.inclusion_tag('photo_upload.html')
 def photo_upload(default_message, example_photo):
-	raw_form = RawPhotoForm()
 	return {
-		'raw_form': raw_form,
-		'default_message': default_message,
 		'example_photo': example_photo,
 	}
