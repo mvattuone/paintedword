@@ -10,15 +10,11 @@
 			<canvas id="canvas-foreground" style="position:absolute; left:0; top:0;" width="360" height="360"></canvas>
 			<canvas id="canvas" style="position:absolute; left:0; top:0;" width="360" height="360"></canvas>
 		</div>
-		<div class-"fieldWrapper">
-			<label for="id_message">Your Message: <span></span></label>
-			<textarea id="id_message" rows="10" cols="40" maxlength="140" name="message">
-		</div>
-		<div class-"fieldWrapper">
-			<label for="id_message">Your Email: <span></span></label>
-			<textarea id="id_message" rows="10" cols="40" maxlength="140" name="message">{{default_message}}</textarea>
-		</div>
-		<a id="share-to-facebook" href="#">Post to Facebook</a>
+		<div class="field">
+	 		<label for="name">Your Name</label>
+ 			<input id="name" type="text" name="name" maxlength="50" />
+ 		</div>
+		<a id="share-to-facebook" href="#">Save and Share</a>
 		<a id="startOver" href="{{campaign_link}}" />Start Over</a>
 	</div>
 </div>
