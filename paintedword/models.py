@@ -7,8 +7,6 @@ media = FileSystemStorage()
 
 def example_file_name(instance, filename):
     return "photos/%s/example.png" % (instance.slug)
-def raw_file_name(instance, filename):
-    return "photos/raw/raw.png"
 def captioned_file_name(instance, filename):
     return "photos/%s/%d_caption.png" % (instance.campaign.slug,instance.pk)
 
@@ -31,12 +29,6 @@ class PhotoCampaign(models.Model):
     def render_example_photo(self):
         return '<img src="%s%s">' % (settings.MEDIA_URL, self.example_photo,)
 
-class RawPhoto(models.Model):
-    photo = models.ImageField(upload_to=raw_file_name, storage=media)
-
-    def __unicode__(self):
-        return "raw_%s.png" % self.pk
-
 class Photo(models.Model):
     campaign = models.ForeignKey(PhotoCampaign)
     name = models.CharField(max_length=50)
@@ -44,7 +36,6 @@ class Photo(models.Model):
     email = models.EmailField(max_length=75)
     message = models.CharField(max_length=280,null=True,blank=True)
     akid = models.PositiveIntegerField(null=True,blank=True)
-    raw_photo = models.ForeignKey(RawPhoto, related_name="original_photo")
     captioned_photo = models.ImageField(upload_to=captioned_file_name, storage=media)
     approved = models.BooleanField()
 

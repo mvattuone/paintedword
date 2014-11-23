@@ -10,6 +10,3 @@ class PhotoForm(ModelForm):
             'message': forms.Textarea(attrs={'cols': 80, 'rows': 20}),
         }
 		
-class RawPhotoForm(ModelForm):
-	class Meta:
-		model = RawPhoto
