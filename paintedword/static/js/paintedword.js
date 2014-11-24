@@ -53,7 +53,7 @@ function drawFrame(context) {
           context.fillStyle = "#FFF";
           context.font = "bold 24px Comic Sans MS";
           context.textAlign = "start";
-          context.fillText(options.name, 80, 20);
+          context.fillText(options.name, 140, 53);
         }
       };
     }
