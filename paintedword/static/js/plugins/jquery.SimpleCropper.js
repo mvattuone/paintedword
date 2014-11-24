@@ -30,8 +30,9 @@
 
     //add click to element
     this.click(function() {
-      aspX = $(this).width();
-      aspY = $(this).height();
+      // Hack - hardcode aspect ratio
+      aspX = 360;
+      aspY = 243;
       $('#fileInput').click();
     });
 
@@ -193,10 +194,11 @@
       var kw = imgWidth / $("#preview").width();
       var kh = imgHeight / $("#preview").height();
 
-      // Set canvas width and height and draw selection on it
-      canvas.width = aspX;
-      canvas.height = aspY;
-      context.drawImage(current_image, (x1 * kw), (y1 * kh), (sw * kw), (sh * kh), 0, 0, aspX, aspY);
+      // Hack - set canvas width and height to hardcoded image size, 
+      // not based on aspect ratio since we already did that.
+      canvas.width = 360;
+      canvas.height = 360;
+      context.drawImage(current_image, (x1 * kw), (y1 * kh), (sw * kw), (sh * kh), 0, 82, aspX, aspY); //HACK - push image down below top frame.
 
       // Convert canvas image to normal img
       var dataUrl = canvas.toDataURL();

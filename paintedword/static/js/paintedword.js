@@ -47,8 +47,6 @@ function drawFrame(context) {
       frame.src = options.frame_url;
       frame.onload = function() {
         var canvas = context.canvas;
-        context.fillStyle = "#AABBCC";
-        context.fillRect(0,0,frame.width,frame.height);
         context.drawImage(frame,0,0,canvas.clientWidth,canvas.clientHeight);
         //lay out the name
         if (options.name !== "undefined") {
