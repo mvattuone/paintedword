@@ -46,12 +46,13 @@ function drawFrame(context) {
       var frame = new Image();
       frame.src = options.frame_url;
       frame.onload = function() {
+        var canvas = context.canvas;
         context.fillStyle = "#AABBCC";
         context.fillRect(0,0,frame.width,frame.height);
-        context.drawImage(frame,0,0,frame.width,frame.height);
+        context.drawImage(frame,0,0,canvas.clientWidth,canvas.clientHeight);
         //lay out the name
         if (options.name !== "undefined") {
-          context.fillStyle = "lime";
+          context.fillStyle = "#FFF";
           context.font = "bold 24px Comic Sans MS";
           context.textAlign = "start";
           context.fillText(options.name, 80, 20);
@@ -59,8 +60,6 @@ function drawFrame(context) {
       };
     }
 }
-
-
 
 function switchStep(current, next) {
     $('[data-step="' + current + '"]').hide();
