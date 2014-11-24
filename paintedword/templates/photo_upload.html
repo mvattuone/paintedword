@@ -7,7 +7,6 @@
 	<div data-step="2" style="display:none">
 		<h2>Enter a message and share to take action!</h2>
 		<div class="canvas-container" style="position:relative">
-			<canvas id="canvas-foreground" style="position:absolute; left:0; top:0;" width="360" height="360"></canvas>
 			<canvas id="canvas" style="position:absolute; left:0; top:0;" width="360" height="360"></canvas>
 		</div>
 		<div class="field">
@@ -15,10 +14,13 @@
  			<input id="name" type="text" name="name" maxlength="50" />
  		</div>
 		<div class="social-buttons-container">
-		<a class="pw-btn" id="download-save" href="#">Download</a>
-		<a class="pw-btn" id="startOver" href="{{campaign_link}}" />Start Over</a>			
-			<a class="pw-btn" id="share-to-facebook">Facebook</a>
-			<a class="pw-btn" id="share-to-twitter">Twitter</a>
+			<div class="basic-controls">
+				<a class="pw-btn" id="download-save" href="#">Download</a>
+				<a class="pw-btn" id="startOver" href="{{campaign_link}}" />Start Over</a>
+			</div>
+			<div class="ready-to-share">
+				<a class="pw-btn" id="share-to-facebook">Save and Share</a>
+			</div>			
 		</div>
 
 	</div>
