@@ -77,7 +77,7 @@ function drawPhoto(context,image_src, callback) {
     var img = new Image();
     img.src = image_src;
     img.onload = function() {
-        context.drawImage(img, 0, 82, 360, 243);
+        context.drawImage(img, 0, 91, 390, 263);
         if (typeof callback !== "undefined") {
             callback(context);
         }
