@@ -51,7 +51,7 @@ function drawFrame(context) {
         //lay out the name
         if (options.name !== "undefined") {
           context.fillStyle = "#FFF";
-          context.font = "bold 24px Comic Sans MS";
+          context.font = "bold 32px House Slant";
           context.textAlign = "start";
           context.fillText(options.name, 140, 53);
         }
