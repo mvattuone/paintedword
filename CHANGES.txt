@@ -1,4 +1,4 @@
 v0.0.1 -- initial release 11/23
 v0.0.2 -- bug fix 11/23
 v0.0.3 -- moar thingz 11/25
-v0.0.4 -- bug fix 11/25
+v0.0.5 -- bug fix 11/25
