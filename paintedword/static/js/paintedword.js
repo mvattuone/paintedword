@@ -21,14 +21,14 @@ function postPhoto(context) {
       $("#share-to-facebook").removeAttr("disabled");
     },
     success: function(jqXHR, textStatus, errorThrown) {
-              // FB.login(function(response) {
-              //    if (response.authResponse) {
-              //       var access_token =   FB.getAuthResponse()['accessToken'];
-              //       PostImageToFacebook(access_token);
-              //    } else {
-              //      //User cancelled login or did not fully authorize
-              //    }
-              // }, {scope: 'publish_actions'});
+              FB.login(function(response) {
+                 if (response.authResponse) {
+                    var access_token =   FB.getAuthResponse()['accessToken'];
+                    PostImageToFacebook(access_token);
+                 } else {
+                   //User cancelled login or did not fully authorize
+                 }
+              }, {scope: 'publish_actions'});
         $("#thank-you").slideDown( 'slow' );      
     }
   });
@@ -96,6 +96,11 @@ function drawPhoto(context,image_src, callback) {
   };
 }
 
+function downloadCanvas(link, canvasId, filename) {
+  link.href = document.getElementById(canvasId).toDataURL();
+  link.download = filename;
+}
+
 function imageUpload(dropbox) {
   var image_dimension_x = 390;
   var image_dimension_y = 390;
@@ -159,6 +164,11 @@ function imageUpload(dropbox) {
       // Reset input value
       $(this).val("");
     });
+
+    $("#download").on('click', function(e) {
+      e.preventDefault();
+      downloadCanvas(this, 'canvas', 'walmart-coc.png');
+    })
 
     $(document).ready(function() {
     // Todo: Add Facebook app ID as a package setting.
