@@ -109,11 +109,11 @@ $(document).ready(function() {
     $('#examplePhoto').simpleCropper();
 
     // testing after-share thank you show box
-    setTimeout( function() {
-    
+    $('#share-to-facebook').click( function() {
+
         $("#thank-you").slideDown( 'slow' );      
-    
-    }, 3000);
+
+    });
 
 });
 
