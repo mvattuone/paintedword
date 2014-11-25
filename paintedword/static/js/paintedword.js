@@ -182,6 +182,17 @@ function imageUpload(dropbox) {
   });
 
 
-viewport = document.querySelector("meta[name=viewport]");
-viewport.setAttribute('content', 'width=440, initial-scale=.6, maximum-scale=1, user-scalable=0');
+// viewport = document.querySelector("meta[name=viewport]");
+// viewport.setAttribute('content', 'width=440, initial-scale=.6, maximum-scale=1, user-scalable=0');
+
+
+// var hammertime = new Hammer(document.getElementById("photo"));
+
+// hammertime.get('pan').set({ direction: Hammer.DIRECTION_ALL });
+
+// hammertime.on('pan', function(ev) {
+//     console.log(ev);
+// });
+
+
 
