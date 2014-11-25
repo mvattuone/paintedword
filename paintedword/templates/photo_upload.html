@@ -6,20 +6,21 @@
 		</div>
 
 	</div>
-		
+	
 	<div data-step="2" style="display:none">
 		<h2>Enter a message and share to take action!</h2>
 		<div class="canvas-container" style="position:relative">
-			<canvas id="canvas" style="position:absolute; left:0; top:0;" width="360" height="360"></canvas>
-
+			<canvas id="canvas" style="position:absolute; left:0; top:0;" width="390" height="390"></canvas>
+			<div id="preview"></div>
 		</div>
 		<div class="field">
 	 		<label for="name">Your Name</label>
  			<input id="name" type="text" name="name" maxlength="50" />
+ 			<input type='file' id='fileInput' name='files[]'/>
  		</div>
 		<div class="social-buttons-container">
 			<a class="pw-btn" id="startOver" href="{{campaign_link}}" />Start Over</a>
-			<a class="pw-btn" id="share-to-facebook">Save and Share</a>
+			<a class="pw-btn" id="share-to-facebook" href="#">Save and Share</a>
 		</div>
 
 	</div>
