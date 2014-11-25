@@ -27,6 +27,9 @@ function PostImageToFacebook(authToken) {
             },
             complete: function () {
                 console.log("Posted to facebook");
+
+                // show thank you panel after share
+                // $("#thank-you").show();
             }
         });
 

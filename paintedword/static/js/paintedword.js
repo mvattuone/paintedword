@@ -107,6 +107,14 @@ $(document).ready(function() {
 
     // Init Simple Cropper
     $('#examplePhoto').simpleCropper();
+
+    // testing after-share thank you show box
+    setTimeout( function() {
+    
+        $("#thank-you").slideDown( 'slow' );      
+    
+    }, 3000);
+
 });
 
 
