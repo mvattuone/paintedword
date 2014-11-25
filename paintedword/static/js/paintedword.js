@@ -182,5 +182,6 @@ function imageUpload(dropbox) {
   });
 
 
-
+viewport = document.querySelector("meta[name=viewport]");
+viewport.setAttribute('content', 'width=440, initial-scale=.6, maximum-scale=1, user-scalable=0');
 
