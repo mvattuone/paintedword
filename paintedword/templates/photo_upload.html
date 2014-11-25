@@ -1,13 +1,17 @@
 <div id="upload">
 	<div data-step="1" class="call-box">
 		<h2>Click the image to get started.</h2>
-		<div id="examplePhoto">{{example_photo|safe}}</div>
+		<div id="examplePhoto">{{example_photo|safe}}
+			<div id="example-photo-overlay">Upload</div>
+		</div>
+
 	</div>
 		
 	<div data-step="2" style="display:none">
 		<h2>Enter a message and share to take action!</h2>
 		<div class="canvas-container" style="position:relative">
 			<canvas id="canvas" style="position:absolute; left:0; top:0;" width="360" height="360"></canvas>
+
 		</div>
 		<div class="field">
 	 		<label for="name">Your Name</label>
