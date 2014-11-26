@@ -3,7 +3,7 @@ from setuptools import find_packages
 
 setup(
     name='painted-word',
-    version='0.0.9',
+    version='0.1.0',
     author='Mike Vattuone',
     author_email='mvattuone@gmail.com',
     url='https://github.com/mvattuone/painted-word',
