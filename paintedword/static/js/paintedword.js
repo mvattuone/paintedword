@@ -1,4 +1,3 @@
-
 function postPhoto(context, access_token) {
 
   $('input').removeClass('error');
@@ -148,13 +147,15 @@ function imageUpload(dropbox) {
       var canvas = document.getElementById("canvas"),
       context = canvas.getContext("2d");
       FB.login(function(response) {
+         // TODO: Maybe make a try/catch instead and provide a real error...
          if (response.authResponse) {
             var access_token =   FB.getAuthResponse()['accessToken'];
+            drawPhoto(context,$('#preview img').data('cropbox').getDataURL(), postPhoto(context, access_token));
          } else {
-           //User cancelled login or did not fully authorize
+            console.log("User cancelled login or did not fully authorize");
          }
       }, {scope: 'publish_actions'});
-      drawPhoto(context,$('#preview img').data('cropbox').getDataURL(), postPhoto(context, access_token));
+
     });
 
     $("#examplePhoto").click(function() {
