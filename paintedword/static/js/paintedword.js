@@ -29,7 +29,8 @@ function postPhoto(context) {
                    //User cancelled login or did not fully authorize
                  }
               }, {scope: 'publish_actions'});
-        $("#thank-you").slideDown( 'slow' );      
+              $("#upload h2, #upload .field, #upload .social-buttons-container, .disclaimer").hide();        
+              $("#thank-you").slideDown( 'slow' );   
     }
   });
 }
@@ -193,6 +194,5 @@ function imageUpload(dropbox) {
 // hammertime.on('pan', function(ev) {
 //     console.log(ev);
 // });
-
 
 
