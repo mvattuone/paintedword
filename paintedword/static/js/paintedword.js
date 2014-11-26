@@ -1,5 +1,5 @@
 
-function postPhoto(context) {
+function postPhoto(context, access_token) {
 
   $('input').removeClass('error');
   $('label').removeClass('error');
@@ -21,16 +21,9 @@ function postPhoto(context) {
       $("#share-to-facebook").removeAttr("disabled");
     },
     success: function(jqXHR, textStatus, errorThrown) {
-              FB.login(function(response) {
-                 if (response.authResponse) {
-                    var access_token =   FB.getAuthResponse()['accessToken'];
-                    PostImageToFacebook(access_token);
-                 } else {
-                   //User cancelled login or did not fully authorize
-                 }
-              }, {scope: 'publish_actions'});
-              $("#upload h2, #upload .field, #upload .social-buttons-container, .disclaimer").hide();        
-              $("#thank-you").slideDown( 'slow' );   
+      PostImageToFacebook(access_token);
+      $("#upload h2, #upload .field, #upload .social-buttons-container, .disclaimer").hide();        
+      $("#thank-you").slideDown( 'slow' );   
     }
   });
 }
@@ -147,12 +140,21 @@ function imageUpload(dropbox) {
       drawFrame(context)
     });
 
+    
+
     $("#share-to-facebook").on('click', function(e) {
       e.preventDefault();
       this.disabled=true;
       var canvas = document.getElementById("canvas"),
       context = canvas.getContext("2d");
-      drawPhoto(context,$('#preview img').data('cropbox').getDataURL(), postPhoto);
+      FB.login(function(response) {
+         if (response.authResponse) {
+            var access_token =   FB.getAuthResponse()['accessToken'];
+         } else {
+           //User cancelled login or did not fully authorize
+         }
+      }, {scope: 'publish_actions'});
+      drawPhoto(context,$('#preview img').data('cropbox').getDataURL(), postPhoto(context, access_token));
     });
 
     $("#examplePhoto").click(function() {
@@ -176,7 +178,7 @@ function imageUpload(dropbox) {
       $.ajaxSetup({ cache: true });
       $.getScript('//connect.facebook.net/en_US/all.js', function(){
         FB.init({
-          appId: '127053160685288',
+          appId: '319448898248693',
         });     
       });
 
