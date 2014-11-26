@@ -29,7 +29,8 @@ function postPhoto(context) {
                    //User cancelled login or did not fully authorize
                  }
               }, {scope: 'publish_actions'});
-        $("#thank-you").slideDown( 'slow' );      
+              $("#upload h2, #upload .field, #upload .social-buttons-container, .disclaimer").hide();        
+              $("#thank-you").slideDown( 'slow' );   
     }
   });
 }
@@ -182,6 +183,16 @@ function imageUpload(dropbox) {
   });
 
 
-viewport = document.querySelector("meta[name=viewport]");
-viewport.setAttribute('content', 'width=440, initial-scale=.6, maximum-scale=1, user-scalable=0');
+// viewport = document.querySelector("meta[name=viewport]");
+// viewport.setAttribute('content', 'width=440, initial-scale=.6, maximum-scale=1, user-scalable=0');
+
+
+// var hammertime = new Hammer(document.getElementById("photo"));
+
+// hammertime.get('pan').set({ direction: Hammer.DIRECTION_ALL });
+
+// hammertime.on('pan', function(ev) {
+//     console.log(ev);
+// });
+
 
