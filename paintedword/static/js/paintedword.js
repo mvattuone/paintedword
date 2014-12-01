@@ -134,12 +134,26 @@ function imageUpload(dropbox) {
     }
 
     $("#name").change(function() {
+
       var canvas = document.getElementById("canvas"),
       context = canvas.getContext("2d");
       drawFrame(context)
+
     });
 
-    
+    function charCountDown(inputEl, counterEl) {
+          if(!inputEl || !counterEl){return false}; // catches errors
+          var limit = inputEl.maxLength;
+          var counter = counterEl;
+          var remaining = limit - inputEl.value.length;
+          counter.innerHTML = remaining+ " of " + limit + " remaining";
+    }
+
+    $("#name").keypress( function() {
+      var inputEl = document.getElementById("name");
+      var counterEl = document.getElementById("charcount");
+      charCountDown(inputEl, counterEl);
+    });
 
     $("#share-to-facebook").on('click', function(e) {
       e.preventDefault();
