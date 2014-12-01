@@ -2,7 +2,7 @@ function postPhoto(context, access_token) {
 
   $('input').removeClass('error');
   $('label').removeClass('error');
-  var base64img = context.canvas.toDataURL();
+  var base64img = context.canvas.toDataURL("image/png");
   $.ajax({
     type: 'POST',
     url: 'submit',
@@ -90,7 +90,7 @@ function drawPhoto(context,image_src, callback) {
 }
 
 function downloadCanvas(link, canvasId, filename) {
-  link.href = document.getElementById(canvasId).toDataURL();
+  link.href = document.getElementById(canvasId).toDataURL("image/png");
   link.download = filename;
 }
 
@@ -150,7 +150,7 @@ function imageUpload(dropbox) {
          // TODO: Maybe make a try/catch instead and provide a real error...
          if (response.authResponse) {
             var access_token =   FB.getAuthResponse()['accessToken'];
-            drawPhoto(context,$('#preview img').data('cropbox').getDataURL(), postPhoto(context, access_token));
+            drawPhoto(context,$('#preview img').data('cropbox').getDataURL("image/png"), postPhoto(context, access_token));
          } else {
             console.log("User cancelled login or did not fully authorize");
          }
