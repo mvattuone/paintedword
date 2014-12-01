@@ -169,10 +169,18 @@ function imageUpload(dropbox) {
       $(this).val("");
     });
 
-    $("#download").on('click', function(e) {
-      e.preventDefault();
+    document.getElementById("download").addEventListener('click', function() {
+      // downloadCanvas here
+      console.log("executing new download link function");
       downloadCanvas(this, 'canvas', 'walmart-coc.png');
-    })
+    }, false);
+
+    // $("#download").on('click', function(e) {
+    //   console.log("What is 'this' in the download link");
+    //   console.log(this);
+    //   // e.preventDefault();
+    //   downloadCanvas(this, 'canvas', 'walmart-coc.png');
+    // });
 
     $(document).ready(function() {
     // Todo: Add Facebook app ID as a package setting.
