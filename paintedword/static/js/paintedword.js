@@ -106,6 +106,21 @@ function imageUpload(dropbox) {
   var current_image = null;
   var ias = null;
   var file = $("#fileInput").get(0).files[0];
+  console.log(file);
+
+      loadImage.parseMetaData(
+          file,
+          function (data) {
+              if (!data.imageHead) {
+                console.log("no data in my image head");
+                  return;
+              }
+
+              var orientation = data.exif.getAll();
+              console.log(orientation);
+          }
+      );
+
       //var file = document.getElementById('fileInput').files[0];
       var imageType = /image.*/;
 
@@ -114,6 +129,8 @@ function imageUpload(dropbox) {
 
         reader.onload = function(e) {
           switchStep(1,2);
+
+          console.log(reader.result);
 
           // Create a new image with image crop functionality
           current_image = new Image();
