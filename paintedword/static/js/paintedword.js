@@ -1,3 +1,60 @@
+// global variable to store canvas data
+var canvasDataSnapshot = "";
+
+//draw photo to canvas
+function drawPhoto(context,image_src, callback) {
+  var img = new Image();
+  img.src = image_src;
+  img.onload = function() {
+    // console.log("image loaded, here's image pulled from cropper:");
+    // document.getElementById('footer').appendChild(img);
+    context.drawImage(img,0,91,img.width,img.height);
+    if (typeof callback !== "undefined") {
+      callback(context);
+    }
+  };
+}
+
+function saveImage() {
+  var canvas = document.getElementById("canvas"),
+  context = canvas.getContext("2d");
+  var img = new Image();
+  img.src = $('#preview img').data('cropbox').getDataURL("image/png");
+  img.onload = function() {
+    context.drawImage(img,0,91,img.width,img.height);
+    canvasDataSnapshot = context.canvas.toDataURL("image/png");
+   }
+}
+
+function drawFrame(context, callback) {
+  options = {
+    name : $('#name').val(),
+    frame_url: frame_url
+  };
+
+    //lay out the frame
+    if (options.frame_url !== "undefined") {
+      var frame = new Image();
+      frame.src = options.frame_url;
+      frame.onload = function() {
+        var canvas = context.canvas;
+        context.drawImage(frame,0,0,canvas.clientWidth,canvas.clientHeight);
+        //lay out the name
+        if (options.name !== "undefined") {
+          context.fillStyle = "#FFF";
+          context.font = "bold 32px House Slant";
+          context.textAlign = "start";
+          context.fillText(options.name, 140, 53);
+        }
+
+        if (typeof callback !== "undefined") {
+          callback(context);
+        }
+      };
+    }
+
+}
+
 function postPhoto(context, access_token) {
 
   $('input').removeClass('error');
@@ -27,41 +84,6 @@ function postPhoto(context, access_token) {
   });
 }
 
-function drawFrame(context, callback) {
-  options = {
-    name : $('#name').val(),
-    frame_url: frame_url
-  };
-
-    //lay out the frame
-
-    if (options.frame_url !== "undefined") {
-      var frame = new Image();
-      frame.src = options.frame_url;
-      frame.onload = function() {
-        var canvas = context.canvas;
-        context.drawImage(frame,0,0,canvas.clientWidth,canvas.clientHeight);
-        //lay out the name
-        if (options.name !== "undefined") {
-          context.fillStyle = "#FFF";
-          context.font = "bold 32px House Slant";
-          context.textAlign = "start";
-          context.fillText(options.name, 140, 53);
-        }
-
-        if (typeof callback !== "undefined") {
-          callback(context);
-        }
-      };
-    }
-
-  }
-
-  function switchStep(current, next) {
-    $('[data-step="' + current + '"]').hide();
-    $('[data-step="' + next + '"]').show();
-  }
-
 //redraw when we add text and such
 function redraw() {
   var canvas = document.getElementById("canvas"),
@@ -69,28 +91,35 @@ function redraw() {
   drawPhoto(context,$('#preview img').attr('src'), drawFrame);
 }
 
+// save a snapshot of the canvas into the DOM (a hidden output image)
+function writePhoto() {
+    var imageData = context.canvas.toDataURL("image/png");
+    var canvasImg = document.getElementById('canvasImg');
+    canvasImg.src = imageData;
+}
+
+// update the global canvasDataSnapshot variable
+function updateCanvasDataSnapshot() {
+    var canvas = document.getElementById("canvas");
+    var imageData = canvas.toDataURL("image/png");
+    canvasDataSnapshot = imageData;
+    console.log("canvas snapshot updated");
+}
+
+function switchStep(current, next) {
+  $('[data-step="' + current + '"]').hide();
+  $('[data-step="' + next + '"]').show();
+}
+
 function initCropper() {
   $('#preview img').cropbox({
     "width":390,
     "height":263
   });
-
 }
 
-//draw photo to canvas
-function drawPhoto(context,image_src, callback) {
-  var img = new Image();
-  img.src = image_src;
-  img.onload = function() {
-    context.drawImage(img,0,91,img.width,img.height);
-    if (typeof callback !== "undefined") {
-      callback(context);
-    }
-  };
-}
-
-function downloadCanvas(link, canvasId, filename) {
-  link.href = document.getElementById(canvasId).toDataURL("image/png");
+function downloadCanvas(link, imgData, filename) {
+  link.href = imgData;
   link.download = filename;
 }
 
@@ -106,8 +135,10 @@ function imageUpload(dropbox) {
   var current_image = null;
   var ias = null;
   var file = $("#fileInput").get(0).files[0];
-  console.log(file);
-
+  
+      // this isn't really doing anything yet, just loading in 
+      // the orientation data to potentially do something with,
+      // using the loadImage plugin
       loadImage.parseMetaData(
           file,
           function (data) {
@@ -116,8 +147,10 @@ function imageUpload(dropbox) {
                   return;
               }
 
-              var orientation = data.exif.getAll();
-              console.log(orientation);
+              // var orientation = data.exif.getAll();
+              var orientation = data.exif.get('Orientation');
+              // console.log("Photo orientation code:");
+              // console.log(orientation);
           }
       );
 
@@ -130,7 +163,8 @@ function imageUpload(dropbox) {
         reader.onload = function(e) {
           switchStep(1,2);
 
-          console.log(reader.result);
+          // console.log("File reader result:");
+          // console.log(reader.result);
 
           // Create a new image with image crop functionality
           current_image = new Image();
@@ -154,7 +188,8 @@ function imageUpload(dropbox) {
 
       var canvas = document.getElementById("canvas"),
       context = canvas.getContext("2d");
-      drawFrame(context)
+      drawFrame(context);
+      saveImage();
 
     });
 
@@ -166,11 +201,50 @@ function imageUpload(dropbox) {
           counter.innerHTML = remaining+ " of " + limit + " remaining";
     }
 
+    $("#examplePhoto").click(function() {
+      // Hack - hardcode aspect ratio
+      $('#fileInput').click();
+    });
+
+    $('#fileInput').change(function(click) {
+      imageUpload($('#preview').get(0));
+      // Reset input value
+      $(this).val("");
+    });
+
+    // character count
     $("#name").keypress( function() {
       var inputEl = document.getElementById("name");
       var counterEl = document.getElementById("charcount");
       charCountDown(inputEl, counterEl);
     });
+
+    $('#saveme').click( function(e){
+      e.preventDefault();
+      saveImage();
+    });
+
+    // new download function binding directly to element
+    document.getElementById("download").addEventListener('click', function(e) {
+
+      // e.preventDefault();
+
+       // // draw photo takes context, image to add to it, and callback
+       // drawPhoto( context,$('#preview img').data('cropbox').getDataURL("image/png"), function(context){
+
+       //    // updates canvas data snapshot once drawPhoto is complete
+       //    updateCanvasDataSnapshot();
+       //    // console.log(canvasDataSnapshot);       
+
+       // });
+    // above won't work - too slow...
+
+      link = this;
+      link.href = canvasDataSnapshot;
+      link.download = 'walmart-test.png';
+
+    }, false);
+
 
     $("#share-to-facebook").on('click', function(e) {
       e.preventDefault();
@@ -188,30 +262,6 @@ function imageUpload(dropbox) {
       }, {scope: 'publish_actions'});
 
     });
-
-    $("#examplePhoto").click(function() {
-      // Hack - hardcode aspect ratio
-      $('#fileInput').click();
-    });
-
-    $('#fileInput').change(function(click) {
-      imageUpload($('#preview').get(0));
-      // Reset input value
-      $(this).val("");
-    });
-
-    document.getElementById("download").addEventListener('click', function() {
-      // downloadCanvas here
-      console.log("executing new download link function");
-      downloadCanvas(this, 'canvas', 'walmart-coc.png');
-    }, false);
-
-    // $("#download").on('click', function(e) {
-    //   console.log("What is 'this' in the download link");
-    //   console.log(this);
-    //   // e.preventDefault();
-    //   downloadCanvas(this, 'canvas', 'walmart-coc.png');
-    // });
 
     $(document).ready(function() {
     // Todo: Add Facebook app ID as a package setting.
