@@ -6,8 +6,6 @@ function drawPhoto(context,image_src, callback) {
   var img = new Image();
   img.src = image_src;
   img.onload = function() {
-    // console.log("image loaded, here's image pulled from cropper:");
-    // document.getElementById('footer').appendChild(img);
     context.drawImage(img,0,91,img.width,img.height);
     if (typeof callback !== "undefined") {
       callback(context);
@@ -118,13 +116,6 @@ function redraw() {
   var canvas = document.getElementById("canvas"),
   context = canvas.getContext("2d");
   drawPhoto(context,$('#preview img').attr('src'), drawFrame);
-}
-
-// save a snapshot of the canvas into the DOM (a hidden output image)
-function writePhoto() {
-    var imageData = context.canvas.toDataURL("image/png");
-    var canvasImg = document.getElementById('canvasImg');
-    canvasImg.src = imageData;
 }
 
 // update the global canvasDataSnapshot variable
@@ -244,19 +235,6 @@ function imageUpload(dropbox) {
 
     // new download function binding directly to element
     document.getElementById("download").addEventListener('click', function(e) {
-
-      // e.preventDefault();
-
-       // // draw photo takes context, image to add to it, and callback
-       // drawPhoto( context,$('#preview img').data('cropbox').getDataURL("image/png"), function(context){
-
-       //    // updates canvas data snapshot once drawPhoto is complete
-       //    updateCanvasDataSnapshot();
-       //    // console.log(canvasDataSnapshot);       
-
-       // });
-    // above won't work - too slow...
-
       link = this;
       link.href = canvasDataSnapshot;
       link.download = 'walmart-test.png';
@@ -291,18 +269,3 @@ function imageUpload(dropbox) {
       });
 
   });
-
-
-// viewport = document.querySelector("meta[name=viewport]");
-// viewport.setAttribute('content', 'width=440, initial-scale=.6, maximum-scale=1, user-scalable=0');
-
-
-// var hammertime = new Hammer(document.getElementById("photo"));
-
-// hammertime.get('pan').set({ direction: Hammer.DIRECTION_ALL });
-
-// hammertime.on('pan', function(ev) {
-//     console.log(ev);
-// });
-
-
