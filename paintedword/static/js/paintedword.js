@@ -55,8 +55,37 @@ function drawFrame(context, callback) {
 
 }
 
-function postPhoto(context, access_token) {
+var postRawPhoto = function(form, dropbox) {
+        $.ajax({
+            type: 'POST',
+            url:"upload_raw_photo",
+            contentType: false,
+            processData: false,
+            data: form,
+        error: function(data) {
+            alert('Please select a photo to upload before submitting.')
+        },
+        success: function(data) {
+            console.log(data);
+            var data = $.parseJSON(data);
+            //clears canvas
+            var canvas = document.getElementById("canvas");
+            var context = canvas.getContext("2d");
+            context.setTransform(1, 0, 0, 1, 0, 0);
+            context.clearRect(0,0,canvas.width,canvas.height);
+            current_image = new Image()
+            current_image.src = 'data:image/png;base64, ' + data['resized_file']
+            dropbox.appendChild(current_image);
+            initCropper();
+            context = document.getElementById("canvas").getContext("2d");
+            drawFrame(context);
+        }
+    });
+}
 
+
+
+function postPhoto(context, access_token) {
   $('input').removeClass('error');
   $('label').removeClass('error');
   var base64img = context.canvas.toDataURL("image/png");
@@ -161,21 +190,12 @@ function imageUpload(dropbox) {
         var reader = new FileReader();
 
         reader.onload = function(e) {
+          var file = $("#fileInput")[0].files[0];
+          var rawPhotoForm = new FormData($('#rawPhoto')[0]);
+          rawPhotoForm.append('photo', file);
+          console.log(rawPhotoForm);
           switchStep(1,2);
-
-          // console.log("File reader result:");
-          // console.log(reader.result);
-
-          // Create a new image with image crop functionality
-          current_image = new Image();
-          current_image.src = reader.result;
-          current_image.id = "photo";
-
-          // Add image to dropbox element
-          dropbox.appendChild(current_image);
-          initCropper();
-          context = document.getElementById("canvas").getContext("2d");
-          drawFrame(context);
+          postRawPhoto(rawPhotoForm, dropbox);
         }
         reader.readAsDataURL(file);
 
@@ -206,10 +226,8 @@ function imageUpload(dropbox) {
       $('#fileInput').click();
     });
 
-    $('#fileInput').change(function(click) {
+    $('#fileInput').change(function(e) {      
       imageUpload($('#preview').get(0));
-      // Reset input value
-      $(this).val("");
     });
 
     // character count
