@@ -6,12 +6,15 @@ from django.core.files.base import ContentFile
 from django.conf import settings
 from django.shortcuts import render
 import json
+import StringIO
 
 import re
 from django.core.files.base import ContentFile
 import tempfile
 
 from ak_support.views import ak_connect
+
+from PIL import Image
 
 from models import *
 from forms import *
@@ -52,7 +55,41 @@ def render_photo_campaign(request,slug):
     }
 
     return render(request, "paintedword.html", dictionary=context)
+   
+@csrf_exempt
+def upload_raw_photo(request,slug):
+    if request.method == 'POST':
+        if request.FILES and request.FILES['photo']:
+            raw_content_file = request.FILES['photo']
+        else:
+            raw_content_file = ContentFile(request.body)
+        img = Image.open(raw_content_file)
+        t_dim = (1024,1024)
+        i_dim = img.size
+        compare_image_to_thumb = [(i_dim > t_dim) for i_dim, t_dim in zip(i_dim,t_dim)]
+        output = StringIO.StringIO() #temporarily mess w/ image in memory
+        if True in compare_image_to_thumb:
+            t_dim = (1024,1024) #TODO: Remove stupid repeat variable
+            img = img.resize(t_dim, Image.ANTIALIAS)
+        else:
+            print 'You just stay the way you are.'
         
+        img.save(output,'png')
+        output.seek(0)
+
+
+        img_output = output.read()
+        import base64
+        encoded_string = base64.b64encode(img_output)
+        print encoded_string
+        data = {
+            'success': True,
+            'resized_file': encoded_string
+        }
+    else:
+        data = {'success': False, 'message':"must post to this url"}
+    return HttpResponse(json.dumps(data),mimetype="text/html")
+
 @csrf_exempt
 def submit(request,slug):
     required_fields = ['name','captioned_photo']

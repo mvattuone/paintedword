@@ -10,6 +10,7 @@ urlpatterns = patterns('',
 
 urlpatterns += patterns('paintedword.views',
     (r'^(?P<slug>[\w-]+)/$', 'render_photo_campaign'),
+    (r'^(?P<slug>[\w-]+)/upload_raw_photo$', 'upload_raw_photo'), #make sure no trailing slash
     (r'^(?P<slug>[\w-]+)/submit$', 'submit')
 )
 
