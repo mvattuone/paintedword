@@ -70,7 +70,7 @@ def upload_raw_photo(request,slug):
         output = StringIO.StringIO() #temporarily mess w/ image in memory
         if True in compare_image_to_thumb:
             t_dim = (1024,1024) #TODO: Remove stupid repeat variable
-            img = img.resize(t_dim, Image.ANTIALIAS)
+            img.thumbnail(t_dim, Image.ANTIALIAS)
         else:
             print 'You just stay the way you are.'
         
