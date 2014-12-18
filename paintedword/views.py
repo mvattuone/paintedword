@@ -15,6 +15,7 @@ import tempfile
 from ak_support.views import ak_connect
 
 from PIL import Image
+from PIL import ExifTags
 
 from models import *
 from forms import *
@@ -63,11 +64,37 @@ def upload_raw_photo(request,slug):
             raw_content_file = request.FILES['photo']
         else:
             raw_content_file = ContentFile(request.body)
+ 
+        print "howdy from djangolandia"
+ 
         img = Image.open(raw_content_file)
+        output = StringIO.StringIO() #temporarily mess w/ image in memory
+
+        # try to get image exif and flip here on the server
+        try:
+            for orientation in ExifTags.TAGS.keys() :
+                if ExifTags.TAGS[orientation] == 'Orientation' : break
+            exif = dict(img._getexif().items())
+            print "my orientation code is:"
+            print(exif[orientation])
+
+            if exif[orientation] == 3 :
+                print "howdy from 3"
+                img = img.rotate(180, expand=True)
+            elif exif[orientation] == 6 :
+                print "howdy from 6"
+                img = img.rotate(-90, expand=True)
+            elif exif[orientation] == 8 :
+                print "howdy from 8"
+                img = img.rotate(180, expand=True)
+
+
+        except:
+            traceback.print_exc()
+
         t_dim = (1024,1024)
         i_dim = img.size
         compare_image_to_thumb = [(i_dim > t_dim) for i_dim, t_dim in zip(i_dim,t_dim)]
-        output = StringIO.StringIO() #temporarily mess w/ image in memory
         if True in compare_image_to_thumb:
             t_dim = (1024,1024) #TODO: Remove stupid repeat variable
             img.thumbnail(t_dim, Image.ANTIALIAS)
@@ -81,7 +108,7 @@ def upload_raw_photo(request,slug):
         img_output = output.read()
         import base64
         encoded_string = base64.b64encode(img_output)
-        print encoded_string
+        # print encoded_string
         data = {
             'success': True,
             'resized_file': encoded_string

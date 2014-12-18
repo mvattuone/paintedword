@@ -1,6 +1,9 @@
 // global variable to store canvas data
 var canvasDataSnapshot = "";
 
+// global var to store image orientation
+var image_orientation;
+
 //draw photo to canvas
 function drawPhoto(context,image_src, callback) {
   var img = new Image();
@@ -64,7 +67,7 @@ var postRawPhoto = function(form, dropbox) {
             alert('Please select a photo to upload before submitting.')
         },
         success: function(data) {
-            console.log(data);
+            // console.log(data);
             var data = $.parseJSON(data);
             //clears canvas
             var canvas = document.getElementById("canvas");
@@ -73,6 +76,12 @@ var postRawPhoto = function(form, dropbox) {
             context.clearRect(0,0,canvas.width,canvas.height);
             current_image = new Image()
             current_image.src = 'data:image/png;base64, ' + data['resized_file']
+
+            // no exif data is available from the returned image
+            // so, use orientation info captured earlier
+            console.log("Here I am again, later in the program");
+            console.log(image_orientation);
+
             dropbox.appendChild(current_image);
             initCropper();
             context = document.getElementById("canvas").getContext("2d");
@@ -156,21 +165,20 @@ function imageUpload(dropbox) {
   var ias = null;
   var file = $("#fileInput").get(0).files[0];
   
-      // this isn't really doing anything yet, just loading in 
-      // the orientation data to potentially do something with,
-      // using the loadImage plugin
+      // grab orientation data to use later
       loadImage.parseMetaData(
           file,
           function (data) {
               if (!data.imageHead) {
-                console.log("no data in my image head");
+                console.log("no data in image head");
                   return;
               }
 
               // var orientation = data.exif.getAll();
               var orientation = data.exif.get('Orientation');
-              // console.log("Photo orientation code:");
-              // console.log(orientation);
+              console.log("Photo orientation code:");
+              console.log(orientation);
+              image_orientation = orientation;
           }
       );
 
@@ -184,7 +192,7 @@ function imageUpload(dropbox) {
           var file = $("#fileInput")[0].files[0];
           var rawPhotoForm = new FormData($('#rawPhoto')[0]);
           rawPhotoForm.append('photo', file);
-          console.log(rawPhotoForm);
+          // console.log(rawPhotoForm);
           switchStep(1,2);
           postRawPhoto(rawPhotoForm, dropbox);
         }
