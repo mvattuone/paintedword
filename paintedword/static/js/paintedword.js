@@ -25,6 +25,7 @@ function saveImage() {
     context.drawImage(img,0,91,img.width,img.height);
     canvasDataSnapshot = context.canvas.toDataURL("image/png");
    }
+   console.log("image saved");
 }
 
 function drawFrame(context, callback) {
@@ -114,6 +115,7 @@ function postPhoto(context, access_token) {
     },
     success: function(jqXHR, textStatus, errorThrown) {
       PostImageToFacebook(access_token);
+      saveImage();
       $("#preview, #upload h2, #upload .field, #upload .social-buttons-container, .disclaimer").hide();        
       $("#thank-you").slideDown( 'slow' );   
     }
