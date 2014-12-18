@@ -70,6 +70,16 @@ def upload_raw_photo(request,slug):
         img = Image.open(raw_content_file)
         output = StringIO.StringIO() #temporarily mess w/ image in memory
 
+        t_dim = (1024,1024)
+        i_dim = img.size
+        compare_image_to_thumb = [(i_dim > t_dim) for i_dim, t_dim in zip(i_dim,t_dim)]
+        if True in compare_image_to_thumb:
+            t_dim = (1024,1024) #TODO: Remove stupid repeat variable
+            img.thumbnail(t_dim, Image.ANTIALIAS)
+            print "Resized, yo"
+        else:
+            print 'You just stay the way you are.'
+        
         # try to get image exif and flip here on the server
         try:
             for orientation in ExifTags.TAGS.keys() :
@@ -79,28 +89,18 @@ def upload_raw_photo(request,slug):
             print(exif[orientation])
 
             if exif[orientation] == 3 :
-                print "howdy from 3"
                 img = img.rotate(180, expand=True)
+                print "Flipped, yo"
             elif exif[orientation] == 6 :
-                print "howdy from 6"
                 img = img.rotate(-90, expand=True)
+                print "Flipped, yo"
             elif exif[orientation] == 8 :
-                print "howdy from 8"
-                img = img.rotate(180, expand=True)
-
-
+                img = img.rotate(90, expand=True)
+                print "Flipped, yo"
+                
         except:
             traceback.print_exc()
 
-        t_dim = (1024,1024)
-        i_dim = img.size
-        compare_image_to_thumb = [(i_dim > t_dim) for i_dim, t_dim in zip(i_dim,t_dim)]
-        if True in compare_image_to_thumb:
-            t_dim = (1024,1024) #TODO: Remove stupid repeat variable
-            img.thumbnail(t_dim, Image.ANTIALIAS)
-        else:
-            print 'You just stay the way you are.'
-        
         img.save(output,'png')
         output.seek(0)
 
