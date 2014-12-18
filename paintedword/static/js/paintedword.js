@@ -114,7 +114,7 @@ function postPhoto(context, access_token) {
     },
     success: function(jqXHR, textStatus, errorThrown) {
       PostImageToFacebook(access_token);
-      $("#upload h2, #upload .field, #upload .social-buttons-container, .disclaimer").hide();        
+      $("#preview, #upload h2, #upload .field, #upload .social-buttons-container, .disclaimer").hide();        
       $("#thank-you").slideDown( 'slow' );   
     }
   });
@@ -208,7 +208,7 @@ function imageUpload(dropbox) {
       var canvas = document.getElementById("canvas"),
       context = canvas.getContext("2d");
       drawFrame(context);
-      saveImage();
+      // saveImage();
 
     });
 
@@ -241,12 +241,18 @@ function imageUpload(dropbox) {
       saveImage();
     });
 
+    $('#show-thankyou-box').click( function(e){
+      e.preventDefault();
+      saveImage();
+      $("#preview, #upload h2, #upload .field, #upload .social-buttons-container, .disclaimer").hide();        
+      $("#thank-you").slideDown( 'slow' );   
+    });
+
     // new download function binding directly to element
     document.getElementById("download").addEventListener('click', function(e) {
       link = this;
       link.href = canvasDataSnapshot;
       link.download = 'walmart-test.png';
-
     }, false);
 
 
