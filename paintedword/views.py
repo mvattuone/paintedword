@@ -7,7 +7,7 @@ from django.conf import settings
 from django.shortcuts import render
 import json
 import StringIO
-
+import traceback
 import re
 from django.core.files.base import ContentFile
 import tempfile
