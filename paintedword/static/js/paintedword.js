@@ -280,7 +280,7 @@ function imageUpload(dropbox) {
       $.ajaxSetup({ cache: true });
       $.getScript('//connect.facebook.net/en_US/all.js', function(){
         FB.init({
-          appId: '127053160685288',
+          appId: '872566102800653',
         });     
       });
 

@@ -19,6 +19,11 @@ $('#test-share-modal').click(function (e) {
 		});
 	});
 	
+	$('#modal_message textarea').append('I stand with the #walmartstrikers');
+	setTimeout(function(){
+		$('#modal_message textarea').focus();
+	}, 1000);	
+
 	// setTimeout(function() {
 	// 	dialog.data.fadeOut('slow', function () {
 	// 			dialog.container.fadeOut('slow', function () {
