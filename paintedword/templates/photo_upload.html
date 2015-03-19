@@ -18,24 +18,25 @@
 	 		<label for="name">Your Name</label>
  			<input id="name" type="text" name="name" maxlength="16" />
  			<span id="charcount" style="font-size: 10px;"></span>
- 			<!--input type='file' id='fileInput' name='files[]'/-->
+ 		
  			<input type='file' id='fileInput' name='files[]' accept="image/*" capture />
  			<img id="canvasImg" src="" style="display:none">
  		</div>
 		<div class="social-buttons-container">
 			<a class="pw-btn" id="startOver" href="{{campaign_link}}" />Start Over</a>
-			<a class="pw-btn" id="share-to-facebook" href="#">Save and Share</a>
+			<!-- renamed id share-to-facebook to previewShare to enable modal-->
+			<a class="pw-btn" id="previewShare" href="#">Save and Share</a>
 		</div>
 
 	</div>
 </div>
+
 <div id="share-modal" style="display:none">
 	<div id="modal_message">
 		<p>Edit to create your share message:</p>
 		<textarea></textarea>
 	</div>
 	<div id="modal_image_preview">
-		<img src="http://staging.colorofchange.org/media/photos/stand-with-walmart-workers/example_1.png">
 	</div>
 	<div class="social-buttons-container">
 		<a class="pw-btn modal-button" id="modal_cancel" href="#" />Start Over</a>
@@ -43,4 +44,3 @@
 	</div>
 </div>
 <br>
-<a href="" id="test-share-modal">click to test modal</a>

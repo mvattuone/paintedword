@@ -1,8 +1,5 @@
 // global variable to store canvas data
-var canvasDataSnapshot = "";
-
-// global var to store image orientation
-var image_orientation;
+canvasDataSnapshot = "";
 
 //draw photo to canvas
 function drawPhoto(context,image_src, callback) {
@@ -11,6 +8,7 @@ function drawPhoto(context,image_src, callback) {
   img.onload = function() {
     context.drawImage(img,0,91,img.width,img.height);
     if (typeof callback !== "undefined") {
+      console.log(context);
       callback(context);
     }
   };
@@ -28,6 +26,8 @@ function saveImage() {
    console.log("image saved");
 }
 
+// Draw frame on top of image that is returned from postRawPhoto() success callback
+// Drawn to canvas
 function drawFrame(context, callback) {
   options = {
     name : $('#name').val(),
@@ -58,37 +58,35 @@ function drawFrame(context, callback) {
 }
 
 var postRawPhoto = function(form, dropbox) {
-        $.ajax({
-            type: 'POST',
-            url:"upload_raw_photo",
-            contentType: false,
-            processData: false,
-            data: form,
-        error: function(data) {
-            alert('Please select a photo to upload before submitting.')
-        },
-        success: function(data) {
-            // console.log(data);
-            var data = $.parseJSON(data);
-            //clears canvas
-            var canvas = document.getElementById("canvas");
-            var context = canvas.getContext("2d");
-            context.setTransform(1, 0, 0, 1, 0, 0);
-            context.clearRect(0,0,canvas.width,canvas.height);
-            current_image = new Image()
-            current_image.src = 'data:image/png;base64, ' + data['resized_file']
+  $.ajax({
+    type: 'POST',
+    url:"upload_raw_photo",
+    contentType: false,
+    processData: false,
+    data: form,
+    error: function(data) {
+        alert('Please select a photo to upload before submitting.')
+    },
+    success: function(data) {
+      var data = $.parseJSON(data);
+      //clears canvas
+      var canvas = document.getElementById("canvas");
+      var context = canvas.getContext("2d");
+      context.setTransform(1, 0, 0, 1, 0, 0);
+      context.clearRect(0,0,canvas.width,canvas.height);
+      current_image = new Image()
+      current_image.src = 'data:image/png;base64, ' + data['resized_file']
 
-            // no exif data is available from the returned image
-            // so, use orientation info captured earlier
-            console.log("Here I am again, later in the program");
-            console.log(image_orientation);
-
-            dropbox.appendChild(current_image);
-            initCropper();
-            context = document.getElementById("canvas").getContext("2d");
-            drawFrame(context);
-        }
-    });
+      // no exif data is available from the returned image
+      // so, use orientation info captured earlier
+      console.log("Here I am again, later in the program");
+      console.log(window.image_orientation);
+      dropbox.appendChild(current_image);
+      initCropper();
+      context = document.getElementById("canvas").getContext("2d");
+      drawFrame(context);
+    }
+  });
 }
 
 
@@ -140,6 +138,7 @@ function updateCanvasDataSnapshot() {
 function switchStep(current, next) {
   $('[data-step="' + current + '"]').hide();
   $('[data-step="' + next + '"]').show();
+  stepTwoEvents();
 }
 
 function initCropper() {
@@ -155,133 +154,165 @@ function downloadCanvas(link, imgData, filename) {
 }
 
 function imageUpload(dropbox) {
-  var image_dimension_x = 390;
-  var image_dimension_y = 390;
-  var scaled_width = 0;
-  var scaled_height = 0;
-  var x1 = 0;
-  var y1 = 0;
-  var x2 = 0;
-  var y2 = 0;
-  var current_image = null;
-  var ias = null;
-  var file = $("#fileInput").get(0).files[0];
+  var image_dimension_x = 390,
+      image_dimension_y = 390,
+      scaled_width = 0,
+      scaled_height = 0,
+      x1 = 0,
+      y1 = 0,
+      x2 = 0,
+      y2 = 0,
+      current_image = null,
+      ias = null,
+      file = $("#fileInput").get(0).files[0];
+
+  loadImage.parseMetaData(file, function (data) {
+    if (!data.imageHead) {
+      console.log("no data in image head");
+        return;
+    }
+
+    var orientation = data.exif.get('Orientation');
+    console.log("Photo orientation code:");
+    console.log(orientation);
+    window.image_orientation = orientation;
+  });
   
-      // grab orientation data to use later
-      loadImage.parseMetaData(
-          file,
-          function (data) {
-              if (!data.imageHead) {
-                console.log("no data in image head");
-                  return;
-              }
+  var imageType = /image.*/;
 
-              // var orientation = data.exif.getAll();
-              var orientation = data.exif.get('Orientation');
-              console.log("Photo orientation code:");
-              console.log(orientation);
-              image_orientation = orientation;
-          }
-      );
+  if (file.type.match(imageType)) {
+    var reader = new FileReader();
 
-      //var file = document.getElementById('fileInput').files[0];
-      var imageType = /image.*/;
-
-      if (file.type.match(imageType)) {
-        var reader = new FileReader();
-
-        reader.onload = function(e) {
-          var file = $("#fileInput")[0].files[0];
-          var rawPhotoForm = new FormData($('#rawPhoto')[0]);
-          rawPhotoForm.append('photo', file);
-          // console.log(rawPhotoForm);
-          switchStep(1,2);
-          postRawPhoto(rawPhotoForm, dropbox);
-        }
-        reader.readAsDataURL(file);
-
-      } else {
-        dropbox.innerHTML = "File not supported!";
-      }
+    reader.onload = function(e) {
+      var file = $("#fileInput").get(0).files[0];
+      var rawPhotoForm = new FormData($('#rawPhoto')[0]);
+      rawPhotoForm.append('photo', file);
+      switchStep(1,2);  
+      postRawPhoto(rawPhotoForm, dropbox);
     }
+    reader.readAsDataURL(file);
 
-    $("#name").change(function() {
+  } else {
+    $("#fileInput").get(0).html("File not supported!");
+  }
+}
 
-      var canvas = document.getElementById("canvas"),
-      context = canvas.getContext("2d");
-      drawFrame(context);
-      // saveImage();
 
-    });
+$("#name").change(function() {
+  var canvas = document.getElementById("canvas"),
+  context = canvas.getContext("2d");
+  drawFrame(context);
+  // saveImage();
 
-    function charCountDown(inputEl, counterEl) {
-          if(!inputEl || !counterEl){return false}; // catches errors
-          var limit = inputEl.maxLength;
-          var counter = counterEl;
-          var remaining = limit - inputEl.value.length;
-          counter.innerHTML = remaining+ " of " + limit + " remaining";
-    }
+});
 
+function charCountDown(inputEl, counterEl) {
+      if(!inputEl || !counterEl){return false}; // catches errors
+      var limit = inputEl.maxLength;
+      var counter = counterEl;
+      var remaining = limit - inputEl.value.length;
+      counter.innerHTML = remaining+ " of " + limit + " remaining";
+}
+
+var stepOneEvents = function() {    
     $("#examplePhoto").click(function() {
-      // Hack - hardcode aspect ratio
       $('#fileInput').click();
     });
 
-    $('#fileInput').change(function(e) {      
+    $('#fileInput').change(function() {
       imageUpload($('#preview').get(0));
     });
+}
 
-    // character count
-    $("#name").keypress( function() {
-      var inputEl = document.getElementById("name");
-      var counterEl = document.getElementById("charcount");
-      charCountDown(inputEl, counterEl);
+
+var initModal = function(context) {
+  base64img = new Image();
+  base64img.src = context.canvas.toDataURL("image/png");
+  base64img.onload = function(e) {
+    $('#modal_image_preview').append(base64img);
+  }
+
+  $('#share-modal').modal({onOpen: function (dialog) {
+    dialog.overlay.fadeIn('slow', function () {
+      dialog.container.fadeIn('slow', function () {
+        dialog.data.fadeIn('slow');  
+      });  
     });
+  }, overlayClose:true});
+      
+}
 
-    $('#saveme').click( function(e){
+
+var stepTwoEvents = function() {    
+ 
+ $("#previewShare").on('click', function(e) {
       e.preventDefault();
-      saveImage();
-    });
-
-    $('#show-thankyou-box').click( function(e){
-      e.preventDefault();
-      saveImage();
-      $("#preview, #upload h2, #upload .field, #upload .social-buttons-container, .disclaimer").hide();        
-      $("#thank-you").slideDown( 'slow' );   
-    });
-
-    // new download function binding directly to element
-    document.getElementById("download").addEventListener('click', function(e) {
-      link = this;
-      link.href = canvasDataSnapshot;
-      link.download = 'walmart-test.png';
-    }, false);
-
-
-    $("#share-to-facebook").on('click', function(e) {
-      e.preventDefault();
-      this.disabled=true;
       var canvas = document.getElementById("canvas"),
-      context = canvas.getContext("2d");
-      FB.login(function(response) {
-         // TODO: Maybe make a try/catch instead and provide a real error...
-         if (response.authResponse) {
-            var access_token =   FB.getAuthResponse()['accessToken'];
-            drawPhoto(context,$('#preview img').data('cropbox').getDataURL("image/png"), postPhoto(context, access_token));
-         } else {
-            console.log("User cancelled login or did not fully authorize");
-         }
-      }, {scope: 'publish_actions'});
+          context = canvas.getContext("2d");
+      drawPhoto(context, $('#preview img').data('cropbox').getDataURL('image/png'), initModal)
+ });
 
-    });
+ $("#share-to-facebook").on('click', function(e) {
+    e.preventDefault();
+    
+    // Prevent more than one share at a time.
+    this.disabled=true;
 
-    $(document).ready(function() {
-    // Todo: Add Facebook app ID as a package setting.
-      $.ajaxSetup({ cache: true });
-      $.getScript('//connect.facebook.net/en_US/all.js', function(){
-        FB.init({
-          appId: '872566102800653',
-        });     
-      });
+    // Get canvas context for drawing photo
+    var canvas = document.getElementById("canvas"),
+        context = canvas.getContext("2d");
 
+    // TODO: Move to the modal
+    FB.login(function(response) {
+       // TODO: Maybe make a try/catch instead and provide a real error...
+       if (response.authResponse) {
+          var access_token =   FB.getAuthResponse()['accessToken'];
+          drawPhoto(context,$('#preview img').data('cropbox').getDataURL("image/png"), postPhoto(context, access_token));
+       } else {
+          console.log("User cancelled login or did not fully authorize");
+       }
+    }, {scope: 'publish_actions'});
+  });  
+
+  // new download function binding directly to element
+  $("#download").on('click', function(e) {
+    link = this;
+    link.href = canvasDataSnapshot;
+    link.download = 'walmart-test.png';
+  }, false);
+
+  // character count
+  $("#name").keypress( function() {
+    var inputEl = document.getElementById("name");
+    var counterEl = document.getElementById("charcount");
+    charCountDown(inputEl, counterEl);
   });
+
+  $('#saveme').click( function(e){
+    e.preventDefault();
+    saveImage();
+  });
+
+  $('#show-thankyou-box').click( function(e){
+    e.preventDefault();
+    saveImage();
+    $("#preview, #upload h2, #upload .field, #upload .social-buttons-container, .disclaimer").hide();        
+    $("#thank-you").slideDown( 'slow' );   
+  });
+  
+}
+
+$(document).ready(function() {
+    // Make sure we cache our AJAX requests.
+    $.ajaxSetup({ cache: true });    
+    // Kick off Facebook app integration
+    // TODO: Add Facebook app ID as a package setting.
+    $.getScript('//connect.facebook.net/en_US/all.js', function(){
+      FB.init({
+        appId: '872566102800653',
+      });     
+
+      // Add event listeners for the first step of the app.
+      stepOneEvents();
+    });
+});
