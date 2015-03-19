@@ -715,4 +715,4 @@
 	};
 }));
 
-console.log('loaded simplemodal');
+console.log('simplemodal loaded');
