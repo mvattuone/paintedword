@@ -283,6 +283,11 @@ var stepTwoEvents = function() {
       drawPhoto(context, $('#preview img').data('cropbox').getDataURL('image/png'), initModal)
  });
 
+ $('#modal_cancel').on('click', function(e) {
+    e.preventDefault();
+    $.modal.close();
+ });
+
  $("#modal_facebook_share").on('click', function(e) {
     e.preventDefault();
     
