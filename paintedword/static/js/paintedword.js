@@ -119,6 +119,7 @@ function postPhoto(context, access_token) {
     url: 'submit',
     contentType: false,
     data: {
+      message: "hello world test message",
       captioned_photo: base64img,
       name:$('#name').val(),
     },
@@ -269,7 +270,7 @@ var initModal = function(context) {
         focusAtEnd();
       });  
     });
-  }, overlayClose:true});
+  }, overlayClose:false});
       
 }
 

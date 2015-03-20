@@ -2,7 +2,7 @@
 function PostImageToFacebook(authToken) {
     var canvas = document.getElementById("canvas");
     var imageData = canvas.toDataURL("image/png");
-    var shareMessage = $('#modal_message textarea').text();
+    var shareMessage = $('#modal_message textarea').val();
     try {
         blob = dataURItoBlob(imageData);
     } catch (e) {
