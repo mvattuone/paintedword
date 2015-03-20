@@ -25,3 +25,10 @@
 #upload {
 	background: url(../img/ajax-loader.gif) no-repeat 50% 36%;	
 }
+
+/* Note from Mike: This style conforms the modal to the size of the rendered image
+   that is loaded dynamically via initModal() */
+#modal_image_preview {
+  width:390px;
+  height: 390px;
+}

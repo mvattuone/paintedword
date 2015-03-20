@@ -114,6 +114,7 @@ function postPhoto(context, access_token) {
     success: function(jqXHR, textStatus, errorThrown) {
       PostImageToFacebook(access_token);
       saveImage();
+      $.modal.close();
       $("#preview, #upload h2, #upload .field, #upload .social-buttons-container, .disclaimer").hide();        
       $("#thank-you").slideDown( 'slow' );   
     }
@@ -228,6 +229,8 @@ var stepOneEvents = function() {
 var initModal = function(context) {
   base64img = new Image();
   base64img.src = context.canvas.toDataURL("image/png");
+  base64img.width = 390;
+  base64img.height = 390;
   base64img.onload = function(e) {
     $('#modal_image_preview').append(base64img);
   }
@@ -252,7 +255,7 @@ var stepTwoEvents = function() {
       drawPhoto(context, $('#preview img').data('cropbox').getDataURL('image/png'), initModal)
  });
 
- $("#share-to-facebook").on('click', function(e) {
+ $("#modal_facebook_share").on('click', function(e) {
     e.preventDefault();
     
     // Prevent more than one share at a time.
