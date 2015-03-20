@@ -1,6 +1,25 @@
 // global variable to store canvas data
 canvasDataSnapshot = "";
 
+// Thanks to Mark from this Stack Overflow post
+// http://stackoverflow.com/questions/499126/jquery-set-cursor-position-in-text-area
+$.fn.selectRange = function(start, end) {
+    if(!end) end = start; 
+    return this.each(function() {
+        if (this.setSelectionRange) {
+            this.focus();
+            this.setSelectionRange(start, end);
+        } else if (this.createTextRange) {
+            var range = this.createTextRange();
+            range.collapse(true);
+            range.moveEnd('character', end);
+            range.moveStart('character', start);
+            range.select();
+        }
+    });
+};
+
+
 //draw photo to canvas
 function drawPhoto(context,image_src, callback) {
   var img = new Image();
@@ -226,6 +245,14 @@ var stepOneEvents = function() {
 }
 
 
+var focusAtEnd = function() {
+  // Calculate length of message to put cursor at
+  // end of share message when modal loads.
+  var shareTextArea = $('#modal_message textarea');
+  var shareTextEnd = shareTextArea.text().length
+  shareTextArea.selectRange(shareTextEnd);
+}
+
 var initModal = function(context) {
   base64img = new Image();
   base64img.src = context.canvas.toDataURL("image/png");
@@ -239,6 +266,7 @@ var initModal = function(context) {
     dialog.overlay.fadeIn('slow', function () {
       dialog.container.fadeIn('slow', function () {
         dialog.data.fadeIn('slow');  
+        focusAtEnd();
       });  
     });
   }, overlayClose:true});
