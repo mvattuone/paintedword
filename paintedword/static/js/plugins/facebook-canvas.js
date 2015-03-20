@@ -2,6 +2,7 @@
 function PostImageToFacebook(authToken) {
     var canvas = document.getElementById("canvas");
     var imageData = canvas.toDataURL("image/png");
+    var shareMessage = $('#modal_message textarea').text();
     try {
         blob = dataURItoBlob(imageData);
     } catch (e) {
@@ -10,7 +11,7 @@ function PostImageToFacebook(authToken) {
     var fd = new FormData();
     fd.append("access_token", authToken);
     fd.append("source", blob);
-    fd.append("message", "I stand with #WalmartStrikers in their demand for $15/hour and a full time schedule.  Show your support by sharing using this handy tool from @ColorOfChange: http://colorofchange.org/photo/stand-with-walmart-workers  And also stand with thousands of #WalmartStrikers who are walking off the job this Black Friday by finding an event near you to attend: http://blackfridayprotests.org/actions?source=coc");
+    fd.append("message", shareMessage);
     try {
         $.ajax({
             url: "https://graph.facebook.com/me/photos?access_token=" + authToken,
@@ -27,7 +28,6 @@ function PostImageToFacebook(authToken) {
             },
             complete: function () {
                 console.log("Posted to facebook");
-
                 // show thank you panel after share
                 // $("#thank-you").show();
             }

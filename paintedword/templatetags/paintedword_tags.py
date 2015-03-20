@@ -14,5 +14,6 @@ def signup_form(page):
 @register.inclusion_tag('photo_upload.html')
 def photo_upload(default_message, example_photo):
 	return {
+		'default_message': default_message,
 		'example_photo': example_photo,
 	}
