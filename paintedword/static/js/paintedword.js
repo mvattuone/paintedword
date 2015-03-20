@@ -217,15 +217,6 @@ function imageUpload(dropbox) {
   }
 }
 
-
-$("#name").change(function() {
-  var canvas = document.getElementById("canvas"),
-  context = canvas.getContext("2d");
-  drawFrame(context);
-  // saveImage();
-
-});
-
 function charCountDown(inputEl, counterEl) {
       if(!inputEl || !counterEl){return false}; // catches errors
       var limit = inputEl.maxLength;
@@ -234,6 +225,8 @@ function charCountDown(inputEl, counterEl) {
       counter.innerHTML = remaining+ " of " + limit + " remaining";
 }
 
+// Event handlers for the first portion of
+// the main photo upload area
 var stepOneEvents = function() {    
     $("#examplePhoto").click(function() {
       $('#fileInput').click();
@@ -243,16 +236,6 @@ var stepOneEvents = function() {
       imageUpload($('#preview').get(0));
     });
 }
-
-
-var focusAtEnd = function() {
-  // Calculate length of message to put cursor at
-  // end of share message when modal loads.
-  var shareTextArea = $('#modal_message textarea');
-  var shareTextEnd = shareTextArea.text().length
-  shareTextArea.selectRange(shareTextEnd);
-}
-
 var initModal = function(context) {
   base64img = new Image();
   base64img.src = context.canvas.toDataURL("image/png");
@@ -263,31 +246,27 @@ var initModal = function(context) {
   }
 
   $('#share-modal').modal({onOpen: function (dialog) {
+    modalEvents();
     dialog.overlay.fadeIn('slow', function () {
       dialog.container.fadeIn('slow', function () {
         dialog.data.fadeIn('slow');  
-        focusAtEnd();
+        $('#modal_message textarea').selectRange($('#modal_message textarea').text().length);
       });  
     });
   }, overlayClose:true});
       
 }
-
-
-var stepTwoEvents = function() {    
- 
- $("#previewShare").on('click', function(e) {
+// Event handlers for the modal 
+var modalEvents= function() {
+  // Close modal when start over button is clicked.
+  $('#modal_cancel').on('click', function(e) {
       e.preventDefault();
-      var canvas = document.getElementById("canvas"),
-          context = canvas.getContext("2d");
-      drawPhoto(context, $('#preview img').data('cropbox').getDataURL('image/png'), initModal)
- });
+      $.modal.close();
+   });
 
- $('#modal_cancel').on('click', function(e) {
-    e.preventDefault();
-    $.modal.close();
- });
-
+ // Currently drawing photo to canvas - could be cool
+ // if we simply share the image generated, but this worked
+ // and didn't feel particular sluggish.
  $("#modal_facebook_share").on('click', function(e) {
     e.preventDefault();
     
@@ -298,7 +277,6 @@ var stepTwoEvents = function() {
     var canvas = document.getElementById("canvas"),
         context = canvas.getContext("2d");
 
-    // TODO: Move to the modal
     FB.login(function(response) {
        // TODO: Maybe make a try/catch instead and provide a real error...
        if (response.authResponse) {
@@ -309,6 +287,17 @@ var stepTwoEvents = function() {
        }
     }, {scope: 'publish_actions'});
   });  
+}
+// Event handlers for the second portion of
+// the main photo upload area
+var stepTwoEvents = function() {    
+ 
+  $("#previewShare").on('click', function(e) {
+      e.preventDefault();
+      var canvas = document.getElementById("canvas"),
+          context = canvas.getContext("2d");
+      drawPhoto(context, $('#preview img').data('cropbox').getDataURL('image/png'), initModal)
+  });
 
   // new download function binding directly to element
   $("#download").on('click', function(e) {
@@ -324,9 +313,10 @@ var stepTwoEvents = function() {
     charCountDown(inputEl, counterEl);
   });
 
-  $('#saveme').click( function(e){
-    e.preventDefault();
-    saveImage();
+  $("#name").change(function() {
+    var canvas = document.getElementById("canvas"),
+    context = canvas.getContext("2d");
+    drawFrame(context);
   });
 
   $('#show-thankyou-box').click( function(e){
@@ -337,9 +327,8 @@ var stepTwoEvents = function() {
   });
   
 }
-
-$(document).ready(function() {
-    // Make sure we cache our AJAX requests.
+var initialize = function() {
+  // Make sure we cache our AJAX requests.
     $.ajaxSetup({ cache: true });    
     // Kick off Facebook app integration
     // TODO: Add Facebook app ID as a package setting.
@@ -351,4 +340,8 @@ $(document).ready(function() {
       // Add event listeners for the first step of the app.
       stepOneEvents();
     });
+}
+
+$(document).ready(function() {
+    initialize();
 });
