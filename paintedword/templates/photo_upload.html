@@ -32,15 +32,16 @@
 </div>
 
 <div id="share-modal" style="display:none">
+	<div id="close_modal"><span class="simplemodal-close">&times;</span></div>
 	<div id="modal_message">
-		<p>Edit to create your share message:</p>
-		<textarea>{{default_message}}</textarea>
+		<p>Create your share message:</p>
+		<textarea placeholder="{{default_message}}"></textarea>
 	</div>
 	<div id="modal_image_preview">
 	</div>
 	<div class="social-buttons-container">
-		<a class="pw-btn modal-button" id="modal_cancel" href="#" />Start Over</a>
-		<a class="pw-btn modal-button" id="modal_facebook_share" href="#">Share</a>
+		<a class="pw-btn modal-button simplemodal-close" id="modal_cancel" href="#" />Go Back</a>
+		<a class="pw-btn modal-button" id="modal_facebook_share" href="#">Share to Facebook</a>
 	</div>
 </div>
 <br>
