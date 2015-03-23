@@ -243,6 +243,8 @@ var initModal = function(context) {
   base64img.height = 390;
   base64img.onload = function(e) {
     $('#modal_image_preview').append(base64img);
+    // also save it for downloading
+    $("#download").attr("href", base64img.src);
   }
 
   $('#share-modal').modal({onOpen: function (dialog) {
@@ -253,7 +255,7 @@ var initModal = function(context) {
         $('#modal_message textarea').selectRange($('#modal_message textarea').text().length);
       });  
     });
-  }, overlayClose:true});
+  }, overlayClose:false});
       
 }
 // Event handlers for the modal 
@@ -267,7 +269,7 @@ var modalEvents= function() {
  // Currently drawing photo to canvas - could be cool
  // if we simply share the image generated, but this worked
  // and didn't feel particular sluggish.
- $("#modal_facebook_share").on('click', function(e) {
+  $("#modal_facebook_share").on('click', function(e) {
     e.preventDefault();
     
     // Prevent more than one share at a time.
@@ -299,12 +301,15 @@ var stepTwoEvents = function() {
       drawPhoto(context, $('#preview img').data('cropbox').getDataURL('image/png'), initModal)
   });
 
-  // new download function binding directly to element
-  $("#download").on('click', function(e) {
-    link = this;
-    link.href = canvasDataSnapshot;
-    link.download = 'walmart-test.png';
-  }, false);
+  // set the download link's filename
+  // download's src set in initModal when "save and share" triggered
+  function setDownloadName(){
+    // date for filename
+    var d = new Date();
+    filename = slug_for_image + '_' + d.getTime() + '.png';
+    $("#download").attr("download", filename);
+  }
+  setDownloadName();
 
   // character count
   $("#name").keypress( function() {
