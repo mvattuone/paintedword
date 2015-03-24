@@ -1,6 +1,6 @@
 Metadata-Version: 1.0
 Name: painted-word
-Version: 0.0.1
+Version: 0.1.7
 Summary: A set of helpers for building an image based campaign.  Plays nicely with the Actionkit CRM.
 Home-page: https://github.com/mvattuone/painted-word
 Author: Mike Vattuone
@@ -20,9 +20,7 @@ Description: painted-word
         
         Pretty dang easy:
         
-        * Add 'paintedword' and 'ziplookup' to your INSTALLED_APPS. Yes, we will merge these at some point.
-        
-        * SyncDB (this will load fixtures from ziplookup, which might take a sec since it's a json file full of zipcodes)
+        * Add 'paintedword' to your INSTALLED_APPS. 
         
         * Add the app to your urls.py
         urlpatterns = patterns('',
