@@ -1,6 +1,6 @@
 Metadata-Version: 1.0
 Name: painted-word
-Version: 0.1.7
+Version: 0.1.8
 Summary: A set of helpers for building an image based campaign.  Plays nicely with the Actionkit CRM.
 Home-page: https://github.com/mvattuone/painted-word
 Author: Mike Vattuone
