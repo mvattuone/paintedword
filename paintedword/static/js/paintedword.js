@@ -339,7 +339,7 @@ var initialize = function() {
     // TODO: Add Facebook app ID as a package setting.
     $.getScript('//connect.facebook.net/en_US/all.js', function(){
       FB.init({
-        appId: '872566102800653',
+        appId: '127053160685288',
       });     
 
       // Add event listeners for the first step of the app.
